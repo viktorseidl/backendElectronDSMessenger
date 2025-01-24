@@ -1,0 +1,8 @@
+{
+    "host": "SERVER-DS-2016\\SQLEXPRESS02",
+    "master": "master",
+    "databaseVerwaltung": "Medicarehsw",
+    "databasePflege": "MedicarePflegehsw",
+    "username": "sa",
+    "password": ""
+}
