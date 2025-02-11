@@ -5,13 +5,13 @@ class SetupDb
     private $host;
     private $database;
     private $databaseV;
-    private $databaseP;
+    private $databaseP = null;
     private $username;
     private $password;
     private $pdo;
     private $stmt;
 
-    public function __construct($host, $dbname, $dbnamepflege, $user, $password)
+    public function __construct($host, $dbname, $dbnamepflege = null, $user, $password)
     {
         if (!isset($host, $dbname, $user)) {
             die("Error: Missing database configuration parameters.");
@@ -19,7 +19,7 @@ class SetupDb
         $this->host = $host;
         $this->database = 'master';
         $this->databaseV = $dbname;
-        $this->databaseP = $dbnamepflege;
+        $this->databaseP = $dbnamepflege ? $dbnamepflege : null;
         $this->username = $user;
         $this->password = $password;
     }

@@ -2,6 +2,13 @@
 
 class Database
 {
+    /**
+     * TestDatabase
+     * host: 'SERVER-DS-2016\SQLEXPRESS02'
+     * database: 'Medicarehsw'
+     * username: 'sa'
+     * password: ''
+     */
     private $host;
     private $database;
     private $databasepflege;

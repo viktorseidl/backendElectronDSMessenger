@@ -24,13 +24,17 @@ switch ($path) {
         $password = sanitizeInput($data['pass'] ?? '');
         $Login = new Login($dbtype, $user, $password);
         echo json_encode($Login->loginByApplikation());
-        exit();
-        //$result = $Login->loginByApplikation();
-        //echo $result;
-        //http_response_code(200);
+        http_response_code(200);
         break;
-    //MG
-//123456
+    case 'checkCredentialsExternal':
+        require(__DIR__ . '/../Classes/Login.php');
+        $dbtype = sanitizeInput($data['dbtype'] ?? '');
+        $user = sanitizeInput($data['user'] ?? '');
+        $password = sanitizeInput($data['pass'] ?? '');  //Must be md5
+        $Login = new Login($dbtype, $user, $password);
+        echo json_encode($Login->loginByExternCall());
+        http_response_code(200);
+        break;
 
 
     default:

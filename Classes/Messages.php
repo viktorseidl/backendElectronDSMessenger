@@ -11,7 +11,7 @@ class Messages
     public function __construct($dbtype = null, $user = null)
     {
         $this->dbtype = $dbtype;
-        $this->user = 'SC';//$user;
+        $this->user = $user;
         $this->pdo = new Database();
         $configFile = __DIR__ . '/../config/config.json';
         if (file_exists($configFile)) {
@@ -24,6 +24,19 @@ class Messages
         }
     }
 
+    public function getAllMessagesIntCount(): mixed
+    {
+        $params = [
+            ':user' => $this->user
+        ];
+        $sql = "SELECT count(ID) as wert FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE gelöscht  IS NULL  AND LOWER(Empfänger) = LOWER('" . $this->user . "') AND Erledigt=0;";
+        $result = $this->pdo->query($sql, []);
+        if (!empty($result)) {
+            return $result[0]['wert'];
+        } else {
+            return [];
+        }
+    }
     public function getAllMessages(): mixed
     {
         $params = [
@@ -44,7 +57,7 @@ class Messages
               AND Anwender = [" . $this->dbnameV . "].[dbo].[EMail].Sender
         ), 'B')
         ELSE UPPER([" . $this->dbnameV . "].[dbo].[EMail].Sender)
-    END AS Sendername FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE gelöscht  IS NULL  AND LOWER(Empfänger) = LOWER(:user) Order by Erledigt Asc;";
+    END AS Sendername FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE gelöscht  IS NULL  AND LOWER(Empfänger) = LOWER(:user) AND Datum <= CURRENT_TIMESTAMP Order by Erledigt Asc;";
         $result = $this->pdo->query($sql, $params);
         if (!empty($result)) {
             return $result;
@@ -101,9 +114,10 @@ class Messages
         WHERE Grund.ID = E.Grund_ID) AS grundname, 
        DATEDIFF(SECOND, '1970-01-01 00:00:00', Datum) AS created, 
        (SELECT FORMAT(CAST(E.Datum AS DATETIME), 'dd.MM.yy')) AS FormattedDate,
-		CASE WHEN (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) 
+       Empfänger as Sendername
+		/*CASE WHEN (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) 
 		IS NOT NULL AND (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) != '' 
-		THEN (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) ELSE Empfänger END as Sendername
+		THEN (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) ELSE Empfänger END as Sendername*/
         FROM [" . $this->dbnameV . "].[dbo].[EMail] E
         WHERE LOWER(Sender) = LOWER(:user);";
         $result = $this->pdo->query($sql, $params);
@@ -185,9 +199,9 @@ class Messages
 	  (SELECT name FROM [" . $this->dbnameV . "].[dbo].[Grund] WHERE ID=EMail.Grund_ID ) as grundname, 
 DATEDIFF(SECOND, '1970-01-01 00:00:00', Datum) AS created,
 (SELECT FORMAT(CAST([" . $this->dbnameV . "].[dbo].[EMail].Datum AS DATETIME), 'dd.MM.yy')) as FormattedDate,
-CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Anwender] = [Empfänger]) 
-		IS NOT NULL AND (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE  [Anwender] = [Empfänger]) != '' 
-		THEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Anwender] = [Empfänger]) ELSE [Empfänger] END as Sendername
+CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Anwender] = [Sender]) 
+		IS NOT NULL AND (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE  [Anwender] = [Sender]) != '' 
+		THEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Anwender] = [Sender]) ELSE [Sender] END as Sendername
   FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE LOWER([gelöschtUser])=LOWER(:user);";
         $result = $this->pdo->query($sql, $params);
         if (!empty($result)) {
@@ -267,8 +281,82 @@ CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[Ber
             return false;
         }
     }
+    public function markAsReadMessageArray($inputArray, $readunread)
+    {
+        if (count($inputArray) > 0) {
+            $preparedstr = implode(',', $inputArray);
+            $params = [
+                ':upd' => $readunread
+            ];
+            $sql = "UPDATE [" . $this->dbnameV . "].[dbo].[EMail] 
+            SET EMail.Erledigt = :upd
+            WHERE EMail.ID IN (" . $preparedstr . ")";
+            $result = $this->pdo->execute($sql, $params);
+            return ($result > 0) ? true : false;
+        } else {
+            return false;
+        }
+    }
+    public function markAsReadMessageOnID($inputID, $readmode)
+    {
+        $params = [
+            ':upd' => $readmode
+        ];
+        $sql = "UPDATE [" . $this->dbnameV . "].[dbo].[EMail] 
+        SET EMail.Erledigt = :upd
+        WHERE EMail.ID IN (" . $inputID . ")";
+        $result = $this->pdo->execute($sql, $params);
+        return ($result > 0) ? true : false;
+    }
+    public function getAllEmpfaengerandGroupen()
+    {
+        if ($this->dbnameP != null) {
+            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender]";
+            //$sql = "WITH RankedRows AS (SELECT p.Anwender,p.Gruppe,COALESCE(NULLIF(p.Mitarbeiter, ''), h.Mitarbeiter) AS Mitarbeiter, ROW_NUMBER() OVER (PARTITION BY p.Anwender, p.Gruppe ORDER BY p.Anwender, p.Gruppe) AS RowNum FROM  [" . $this->dbnameP . "].[dbo].[BerechtigungAnwender] p  LEFT JOIN  [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] h ON p.Anwender = h.Anwender ) SELECT Distinct Anwender, Gruppe, Mitarbeiter FROM RankedRows";
+            $result = $this->pdo->query($sql, []);
+            return (count($result) > 0) ? $result : false;
+        } else {
+            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender]";
+            $result = $this->pdo->query($sql, []);
+            return (count($result) > 0) ? $result : false;
+        }
+    }
+    public function getAttachmentsOnAttachmentId($id): mixed
+    {
+        $params = [
+            ':aid' => $id
+        ];
+        $sql = "SELECT * FROM [" . $this->dbnameV . "].[dbo].[EMail_Anhang] WHERE ID = :aid ORDER BY Pos ASC";
+        $result = $this->pdo->query($sql, $params);
+        if (!empty($result)) {
+            for ($i = 0; $i < count($result); $i++) {
+                $result[$i]['filetype'] = $this->getMimeTypeFromFilename($result[$i]['Name']);
+                $result[$i]['filesizeuncomp'] = $this->getGzippedFileSizeFromBase64($result[$i]['Mail']);
+            }
+            return $result;
+        } else {
+            return [];
+        }
+    }
+    public function getFileToSaveOnIdAndIndex($id, $idindex): mixed
+    {
+        $params = [
+            ':aid' => $id,
+            ':pid' => $idindex
+        ];
+        $sql = "SELECT * FROM [" . $this->dbnameV . "].[dbo].[EMail_Anhang] WHERE ID = :aid AND Pos = :pid ";
+        $result = $this->pdo->query($sql, $params);
+        if (!empty($result)) {
+            for ($i = 0; $i < count($result); $i++) {
+                $result[$i]['filetype'] = $this->getMimeTypeFromFilename($result[$i]['Name']);
+                $result[$i]['filesizeuncomp'] = $this->getGzippedFileSizeFromBase64($result[$i]['Mail']);
+            }
+            return $result;
+        } else {
+            return [];
+        }
+    }
 
 }
-
 
 ?>
