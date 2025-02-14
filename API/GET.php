@@ -4,6 +4,7 @@ function sanitizeInput($input)
     return htmlspecialchars(strip_tags(trim($input)));
 }
 switch ($path) {
+
     case 'checkConfigFileConnector':
         $filePath = __DIR__ . "./../Config/config.json";
         if (file_exists($filePath)) {
@@ -90,10 +91,6 @@ switch ($path) {
         echo json_encode($result);
         http_response_code(200);
         break;
-
-
-
-
     default:
         echo json_encode(['error' => 'Invalid API endpoint']);
         http_response_code(404);

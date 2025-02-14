@@ -311,7 +311,8 @@ CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[Ber
     public function getAllEmpfaengerandGroupen()
     {
         if ($this->dbnameP != null) {
-            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender]";
+
+            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender] where (gelöscht is Null OR gelöscht=0) AND (deaktiviert=0 OR deaktiviert is null)";
             //$sql = "WITH RankedRows AS (SELECT p.Anwender,p.Gruppe,COALESCE(NULLIF(p.Mitarbeiter, ''), h.Mitarbeiter) AS Mitarbeiter, ROW_NUMBER() OVER (PARTITION BY p.Anwender, p.Gruppe ORDER BY p.Anwender, p.Gruppe) AS RowNum FROM  [" . $this->dbnameP . "].[dbo].[BerechtigungAnwender] p  LEFT JOIN  [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] h ON p.Anwender = h.Anwender ) SELECT Distinct Anwender, Gruppe, Mitarbeiter FROM RankedRows";
             $result = $this->pdo->query($sql, []);
             return (count($result) > 0) ? $result : false;

@@ -2,7 +2,6 @@
 require('Database.php');
 class Login
 {
-
     private string $userSha256;
     private string $passSha256;
     private string $dbtype;

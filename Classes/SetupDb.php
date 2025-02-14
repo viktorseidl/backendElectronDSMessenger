@@ -23,6 +23,7 @@ class SetupDb
         $this->username = $user;
         $this->password = $password;
     }
+
     public function checkDBCredentials(): bool|string
     {
         // Try to connect to the database
@@ -71,6 +72,7 @@ class SetupDb
             return 'FILE CREATION FAILED';
         }
     }
+
     public function checkIfDatabaseVPExists($name): bool
     {
         $sql = "SELECT 1 AS DatabaseExists FROM sys.databases WHERE name = :dbname";
