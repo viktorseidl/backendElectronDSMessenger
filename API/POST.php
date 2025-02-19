@@ -17,6 +17,19 @@ switch ($path) {
         echo json_encode($result);
         http_response_code(200);
         break;
+    case 'testDBTables':
+        require(__DIR__ . '/../Classes/SetupDb.php');
+        $host = sanitizeInput($data['host'] ?? '');
+        $dbname = sanitizeInput($data['dbname'] ?? '');
+        $dbnamepflege = sanitizeInput($data['dbnamepflege'] ?? '');
+        $user = sanitizeInput($data['user'] ?? '');
+        $password = sanitizeInput($data['pass'] ?? '');
+        $result = false;
+        $Setup = new SetupDb($host, $dbname, $dbnamepflege, $user, $password);
+        $result = $Setup->checkOrCreateTables();
+        echo json_encode($result);
+        http_response_code(200);
+        break;
     case 'checkCredentials':
         require(__DIR__ . '/../Classes/Login.php');
         $dbtype = sanitizeInput($data['dbtype'] ?? '');
