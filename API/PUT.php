@@ -36,6 +36,66 @@ switch ($path) {
         $result = $Messages->markAsReadMessageOnID($ID, $readunread);
         echo json_encode($result ?: false);
         break;
+    case 'updateNotePositionOnID':
+        require(__DIR__ . '/../Classes/Notes.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $data = json_decode($data);
+        $ID = sanitizeInput($data->mid ?? '');
+        $x = sanitizeInput($data->xk ?? '');
+        $y = sanitizeInput($data->yk ?? '');
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->updateNotePositionOnID($anwender, $ID, $x, $y);
+        echo json_encode($result ?: false);
+        break;
+    case 'updateNotePriorityOnID':
+        require(__DIR__ . '/../Classes/Notes.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $data = json_decode($data);
+        $ID = sanitizeInput($data->mid ?? '');
+        $prio = sanitizeInput($data->prio ?? '');
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->updateNotePriorityOnID($anwender, $ID, $prio);
+        echo json_encode($result ?: false);
+        break;
+    case 'updateNoteColorOnID':
+        require(__DIR__ . '/../Classes/Notes.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $data = json_decode($data);
+        $ID = sanitizeInput($data->mid ?? '');
+        $color = sanitizeInput($data->color ?? '');
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->updateNoteColorOnID($anwender, $ID, $color);
+        echo json_encode($result ?: false);
+        break;
+    case 'updateNoteTextOnID':
+        require(__DIR__ . '/../Classes/Notes.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $data = json_decode($data);
+        $ID = sanitizeInput($data->mid ?? '');
+        $txt = sanitizeInput($data->txt ?? '');
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->updateNoteTextOnID($anwender, $ID, $txt);
+        echo json_encode($result ?: false);
+        break;
+    case 'updateNoteRestoreOnID':
+        require(__DIR__ . '/../Classes/Notes.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $data = json_decode($data);
+        $ID = sanitizeInput($data->mid ?? '');
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->updateNoteRestoreOnID($anwender, $ID);
+        echo json_encode($result ?: false);
+        break;
 
 
 

@@ -22,6 +22,17 @@ switch ($path) {
         $result = $Messages->deleteMessagesArrayOnID($IDarr);
         echo json_encode($result ?: false);
         break;
+    case 'updateNoteDeleteOnID':
+        require(__DIR__ . '/../Classes/Notes.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $data = json_decode($data);
+        $ID = sanitizeInput($data->mid ?? '');
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->updateNoteDeleteOnID($anwender, $ID);
+        echo json_encode($result ?: false);
+        break;
     default:
         echo json_encode(['error' => 'Invalid API endpoint']);
         http_response_code(404);

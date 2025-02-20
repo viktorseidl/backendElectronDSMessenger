@@ -27,6 +27,24 @@ switch ($path) {
         echo json_encode($result);
         http_response_code(200);
         break;
+    case 'getNotesAllActive':
+        require(__DIR__ . '/../Classes/Notes.php');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->getAllMyNotes($anwender, 0);
+        echo json_encode($result);
+        http_response_code(200);
+        break;
+    case 'getNotesAllInActive':
+        require(__DIR__ . '/../Classes/Notes.php');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->getAllMyNotes($anwender, 1);
+        echo json_encode($result);
+        http_response_code(200);
+        break;
     case 'getMessagesAllReceived':
         require(__DIR__ . '/../Classes/Messages.php');
         $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));

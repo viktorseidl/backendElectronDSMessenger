@@ -48,6 +48,17 @@ switch ($path) {
         echo json_encode($Login->loginByExternCall());
         http_response_code(200);
         break;
+    case 'addNewNote':
+        require(__DIR__ . '/../Classes/Notes.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $anwender = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $dbtype = 'verwaltung';
+        $data = json_decode($data);
+        $ID = sanitizeInput($data->pid ?? '');
+        $Notes = new Notes($dbtype, $anwender);
+        $result = $Notes->addNewNote($anwender, $ID);
+        echo json_encode($result ?: false);
+        break;
 
 
     default:

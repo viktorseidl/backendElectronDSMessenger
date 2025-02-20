@@ -174,7 +174,7 @@ class SetupDb
                         $sql = " 
                             CREATE TABLE [" . $this->databaseV . "].[dbo].[EMail_Anhang] (
                             [ID] INT IDENTITY(1,1) PRIMARY KEY,
-                            [postedid] INT UNIQUE NOT NULL,
+                            [postedid] BIGINT UNIQUE NOT NULL,
                             [anwender] VARCHAR(100) NOT NULL,
                             [nachricht] TEXT NULL,
                             [wichtig] INT DEFAULT 0 NOT NULL,
