@@ -38,10 +38,10 @@ class Uploader
     }
     public function getID()
     {
-        $sql = "SELECT TOP (1) ID FROM [" . $this->dbnameV . "].[dbo].[EMail_Anhang]  ORDER BY ID DESC;";
+        $sql = "SELECT TOP MAX(ID) AS ID FROM [" . $this->dbnameV . "].[dbo].[EMail_Anhang]";
         $result = $this->pdo->query($sql, []);
         if (!empty($result)) {
-            return $result[0]['ID'];
+            return $result[0]['ID'] == 0 ? 1 : $result[0]['ID'];
         } else {
             return false;
         }
@@ -54,7 +54,7 @@ class Uploader
             ':bas' => $base64,
             ':nam' => $filename
         ];
-        $sql = "INSERT INTO [" . $this->dbnameV . "].[dbo].[EMail_Anhang] (ID,Pos,Mail,Name) VALUES (:ids, :pos,:bas,:nam);";
+        $sql = "INSERT INTO [" . $this->dbnameV . "].[dbo].[EMail_Anhang] (ID,Pos,Mail,[Name]) VALUES (:ids, :pos,:bas,:nam);";
         $result = $this->pdo->execute($sql, $params);
         if ($result) {
             return true;
@@ -64,21 +64,17 @@ class Uploader
     }
     public function getlatestIDAndInsertFiles($File)
     {
-        $lastID = $this->getID() != false ? $this->getID() : null;
-        if ($lastID != null) {
-            $c = 0;
-            foreach ($File as $key => $value) {
-                $fileName = $value[1];
-                $base64 = $value[0];
-                if ($this->insertFiles($fileName, $lastID + 1, $key, $base64) == true) {
-                    $c++;
-                }
+        $lastID = $this->getID() != false ? $this->getID() : 1;
+        $c = 0;
+        foreach ($File as $key => $value) {
+            $fileName = $value[1];
+            $base64 = $value[0];
+            if ($this->insertFiles($fileName, $lastID + 1, $key, $base64) == true) {
+                $c++;
             }
-            if ($c == count($File)) {
-                return $lastID + 1;
-            } else {
-                return false;
-            }
+        }
+        if ($c == count($File)) {
+            return $lastID + 1;
         } else {
             return false;
         }

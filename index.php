@@ -7,16 +7,15 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_GET['path'] ?? null; // Assume the frontend sends requests with a 'path' query parameter
 $data = json_decode(file_get_contents('php://input'), true);
-define('BASE_DIR', __DIR__);
 
 if ($method === 'GET') {
-    include(BASE_DIR . '/API/GET.php');
+    include(__DIR__ . '/API/GET.php');
 } elseif ($method === 'POST') {
-    include(BASE_DIR . '/API/POST.php');
+    include(__DIR__ . '/API/POST.php');
 } elseif ($method === 'PUT') {
-    include(BASE_DIR . '/API/PUT.php');
+    include(__DIR__ . '/API/PUT.php');
 } elseif ($method === "DELETE") {
-    include(BASE_DIR . '/API/DELETE.php');
+    include(__DIR__ . '/API/DELETE.php');
 } elseif ($method === "OPTIONS") {
     http_response_code(204); // No Content
     exit;

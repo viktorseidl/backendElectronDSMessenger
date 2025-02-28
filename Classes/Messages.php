@@ -213,10 +213,16 @@ CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[Ber
 
     public function getAllFiles(): mixed
     {
-        $sql = "SELECT DISTINCT EMail.Anhang, EMail_Anhang.ID AS anhangId, EMail_Anhang.Pos AS fileindex,
-        EMail_Anhang.Name AS filename FROM [" . $this->dbnameV . "].[dbo].[EMail] LEFT JOIN [" . $this->dbnameV . "].[dbo].[EMail_Anhang] ON EMail.Anhang = EMail_Anhang.ID WHERE EMail.Sender = '" . $this->user . "' OR EMail.Empfänger = '" . $this->user . "' AND EMail.gelöscht IS NULL";
+        $sql = "SELECT DISTINCT 
+        EMail.Anhang, 
+        EMail_Anhang.ID AS anhangId, 
+        EMail_Anhang.Pos AS fileindex,
+        EMail_Anhang.Name AS filename 
+        FROM [" . $this->dbnameV . "].[dbo].[EMail] 
+        LEFT JOIN [" . $this->dbnameV . "].[dbo].[EMail_Anhang] ON EMail.Anhang = EMail_Anhang.ID AND EMail_Anhang.ID > 0 WHERE LOWER(EMail.Sender) = LOWER('" . $this->user . "') OR LOWER(EMail.Empfänger) = LOWER('" . $this->user . "') AND EMail.gelöscht IS NULL AND EMail.Anhang > 0 ";
+
         $result = $this->pdo->query($sql, []);
-        if (!empty($result)) {
+        if (is_array($result) && (!empty($result)) && (count($result) > 0)) {
             $newArr = [];
             for ($i = 0; $i < count($result); $i++) {
                 $result[$i]['filetype'] = $this->getMimeTypeFromFilename($result[$i]['filename']);
@@ -317,7 +323,7 @@ CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[Ber
             $result = $this->pdo->query($sql, []);
             return (count($result) > 0) ? $result : false;
         } else {
-            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender]";
+            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender] where (gelöscht is Null OR gelöscht=0) AND (deaktiviert=0 OR deaktiviert is null)";
             $result = $this->pdo->query($sql, []);
             return (count($result) > 0) ? $result : false;
         }

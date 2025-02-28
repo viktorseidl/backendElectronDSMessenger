@@ -59,8 +59,6 @@ switch ($path) {
         $result = $Notes->addNewNote($anwender, $ID);
         echo json_encode($result ?: false);
         break;
-
-
     default:
         echo json_encode(['error' => 'Invalid API endpoint']);
         http_response_code(404);

@@ -115,7 +115,7 @@ class SetupDb
                         $sql = " 
                                     CREATE TABLE [" . $this->databaseV . "].[dbo].[Pinnwand] (
                                     [ID] INT IDENTITY(1,1) PRIMARY KEY,
-                                    [postedid] INT UNIQUE NOT NULL,
+                                    [postedid] BIGINT UNIQUE NOT NULL,
                                     [anwender] VARCHAR(100) NOT NULL,
                                     [nachricht] TEXT NULL,
                                     [wichtig] INT DEFAULT 0 NOT NULL,
@@ -173,16 +173,11 @@ class SetupDb
                         array_push($needed, $value . 'Table');
                         $sql = " 
                             CREATE TABLE [" . $this->databaseV . "].[dbo].[EMail_Anhang] (
-                            [ID] INT IDENTITY(1,1) PRIMARY KEY,
-                            [postedid] BIGINT UNIQUE NOT NULL,
-                            [anwender] VARCHAR(100) NOT NULL,
-                            [nachricht] TEXT NULL,
-                            [wichtig] INT DEFAULT 0 NOT NULL,
-                            [xkoordinate] INT DEFAULT 50 NOT NULL,
-                            [ykoordinate] INT DEFAULT 50 NOT NULL,
-                            [geloescht] INT DEFAULT NULL,
-                            [geloeschtdatum] DATETIME DEFAULT NULL,
-                            [HexColumn] VARCHAR(15) DEFAULT '#fef08aFF' NULL
+                            [ID] INT NOT NULL,
+                            [Pos] INT NOT NULL,
+                            [Mail] TEXT NOT NULL,
+                            [Name] VARCHAR(100) NOT NULL, 
+                            PRIMARY KEY (`ID`, `Pos`)
                         )";
                         $stm = $this->pdo->prepare($sql);
                         $result = $stm->execute();
