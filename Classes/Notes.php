@@ -158,7 +158,5 @@ class Notes
         // Format the date into German format (dd.mm.yyyy HH:MM:SS)
         return $date->format('d.m.Y H:i:s');
     }
-}
-
-
+} 
 ?>

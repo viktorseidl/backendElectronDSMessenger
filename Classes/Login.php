@@ -27,8 +27,11 @@ class Login
     public function loginByApplikation(): mixed
     {
         $result = $this->checkCredentialsOnTyp();
-        return $result;
-
+        $roles=[];
+        if($result!=false){
+            $roles=$this->checkBerechtigungenAnwender();
+        }
+        return [$result,$roles]; 
     }
     public function loginByExternCall(): mixed
     {
@@ -73,14 +76,46 @@ class Login
                 $sql = "SELECT TOP 1 [Anwender] as Name, ([Anwender]) as Mitarbeitername, NULL as Gruppe, [Kennwort], 'V' as usertypeVP FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Kennwort] = :pass  and Lower(Anwender) = Lower(:user) AND [deaktiviert]=0;";
             }
         }
-        return $this->pdo->query($sql, $params);
+        $result= $this->pdo->query($sql, $params);
+        
         if (!empty($result)) {
             return $result;
         } else {
-            return "keindatensatz";
+            return false;
         }
     }
 
+    public function checkBerechtigungenAnwender(): mixed
+    { 
+        $sql = "";
+        if($this->dbtype=="pflege"){
+            $sql = "Select TOP(1) Berechtigt from [" . $this->dbnameP . "].[dbo].BerechtigungAnwender where Anwender = :aw and Form = 'frmPflegeMain' and Menu = 'Kalender' and (gelöscht is null or gelöscht = 0)  order by Form, Menu";
+        }else{
+            $sql = "Select TOP(1) Berechtigt from [" . $this->dbnameV . "].[dbo].BerechtigungAnwender where Anwender = :aw and Form = 'frmMain' and Menu = 'Kalender' and (gelöscht is null or gelöscht = 0)  order by Form, Menu";
+        } 
+        $params = [
+            ':aw' => $this->userSha256
+        ];
+        $result = $this->pdo->query($sql, $params);
+        if (!empty($result)) {
+            $roles=[
+                'view:notes',
+                'create:notes',
+                'update:notes',
+                'delete:notes',
+                'print:notes'
+            ];
+            $str=(string)$result[0]['Berechtigt'];
+            if (substr($str, 0, 1) === '1') array_push($roles,'view:calendar');
+            if (substr($str, 3, 1) === '1') array_push($roles,'create:calendar');
+            if (substr($str, 4, 1) === '1') array_push($roles,'update:calendar');
+            if (substr($str, 5, 1) === '1') array_push($roles,'delete:calendar');
+            if (substr($str, 6, 1) === '1') array_push($roles,'print:calendar');
+            return $roles;
+        } else {
+            return [];
+        }
+    }
     public function checkIfDatabasePflegeExists(): bool
     {
         $sql = "SELECT 1 AS DatabaseExists FROM sys.databases WHERE name = :dbname";
