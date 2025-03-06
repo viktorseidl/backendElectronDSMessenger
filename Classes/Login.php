@@ -106,11 +106,18 @@ class Login
                 'print:notes'
             ];
             $str=(string)$result[0]['Berechtigt'];
-            if (substr($str, 0, 1) === '1') array_push($roles,'view:calendar');
-            if (substr($str, 3, 1) === '1') array_push($roles,'create:calendar');
-            if (substr($str, 4, 1) === '1') array_push($roles,'update:calendar');
-            if (substr($str, 5, 1) === '1') array_push($roles,'delete:calendar');
-            if (substr($str, 6, 1) === '1') array_push($roles,'print:calendar');
+            if (substr($str, 0, 1) === '1'){
+                array_push($roles,'view:calendar');
+                array_push($roles,'create:calendar');
+                array_push($roles,'update:calendar');
+                array_push($roles,'delete:calendar');
+                array_push($roles,'print:calendar');
+            }else{
+                if (substr($str, 3, 1) === '1') array_push($roles,'create:calendar');
+                if (substr($str, 4, 1) === '1') array_push($roles,'update:calendar');
+                if (substr($str, 5, 1) === '1') array_push($roles,'delete:calendar');
+                if (substr($str, 6, 1) === '1') array_push($roles,'print:calendar');
+            } 
             return $roles;
         } else {
             return [];
