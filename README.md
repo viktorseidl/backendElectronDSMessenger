@@ -4,7 +4,7 @@ The backendElectronDSMessenger repository provides the backend for the Medicare 
 
 ## Installation Steps
 
-- Check integration of ODBC drivers (msodbcsql.msi)
-- Chech integration of ODBC drivers in php.ini
-- Chech Extensions DLL (php_pdo_sqlsrv_82_ts_x64.dll & php_sqlsrv_82_ts_x64.dll) in C:\xampp\php\ext\
-- PHP Version minimum 8.2 or bigger required
+[+] Check integration of ODBC drivers (msodbcsql.msi)
+[+] Chech integration of ODBC drivers in php.ini
+[+] Chech Extensions DLL (php_pdo_sqlsrv_82_ts_x64.dll & php_sqlsrv_82_ts_x64.dll) in C:\xampp\php\ext\
+[+] PHP Version minimum 8.2 or bigger required
