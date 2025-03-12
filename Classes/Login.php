@@ -64,8 +64,8 @@ class Login
         ];
         $sql = '';
         if ($typ == null) {
-            if ($this->dbtype == "pflege") {
-                $sql = "SELECT DISTINCT TOP 1 BA.Anwender as Name, BA.Kennwort, BA.Gruppe, 'P' as usertypeVP, (LTRIM(RTRIM(M.Name2)) + ' ' + LTRIM(RTRIM(M.Name1))) AS Mitarbeitername FROM [" . $this->dbnameP . "].[dbo].[BerechtigungAnwender] as BA LEFT JOIN [" . $this->dbnameV . "].[dbo].Mitarbeiter as M ON BA.MitarbeiterID = M.ID WHERE BA.gelöscht ! = 0 AND M.BeendigungDatum  IS NULL  AND LOWER(BA.Anwender) = LOWER(:user) AND BA.Kennwort = :pass  AND [deaktiviert]=0;";
+            if ($this->dbtype == "pflege") { 
+                $sql = "SELECT DISTINCT TOP 1 BA.Anwender as Name, BA.Kennwort, BA.Gruppe, 'P' as usertypeVP, (LTRIM(RTRIM(M.Name2)) + ' ' + LTRIM(RTRIM(M.Name1))) AS Mitarbeitername FROM [" . $this->dbnameP . "].[dbo].[BerechtigungAnwender] as BA LEFT JOIN [" . $this->dbnameV . "].[dbo].Mitarbeiter as M ON BA.MitarbeiterID = M.ID WHERE (BA.gelöscht  = 0 or BA.gelöscht is null) AND M.BeendigungDatum  IS NULL  AND LOWER(BA.Anwender) = LOWER(:user) AND BA.Kennwort = :pass  AND ([deaktiviert]=0 or [deaktiviert] is null);";
             } else {
                 $sql = "SELECT TOP 1 [Anwender]  as Name, ([Anwender]) as Mitarbeitername,  NULL as Gruppe, [Kennwort], 'V' as usertypeVP FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Kennwort] = :pass  and Lower(Anwender) = Lower(:user) AND [deaktiviert]=0;";
             }
