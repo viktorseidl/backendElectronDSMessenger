@@ -42,7 +42,7 @@ class Messages
         $params = [
             ':user' => $this->user
         ];
-        $sql = "SELECT TOP (1000) *,(SELECT name FROM [" . $this->dbnameV . "].[dbo].[Grund] WHERE ID=[" . $this->dbnameV . "].[dbo].[EMail].Grund_ID ) as grundname, DATEDIFF(SECOND, '1970-01-01 00:00:00', Datum) AS created, (SELECT FORMAT(CAST([" . $this->dbnameV . "].[dbo].[EMail].Datum AS DATETIME), 'dd.MM.yy')) as FormattedDate,
+        $sql = "SELECT TOP (1000) *,(SELECT name FROM [" . $this->dbnameV . "].[dbo].[Grund] WHERE ID=[" . $this->dbnameV . "].[dbo].[EMail].Grund_ID ) as grundname, DATEDIFF(SECOND, '1970-01-01 00:00:00', Datum) AS created, (SELECT FORMAT(CAST([" . $this->dbnameV . "].[dbo].[EMail].Datum AS DATETIME), 'dd.MM.yy HH:mm')) as FormattedDate,
         CASE 
         WHEN EXISTS (
             SELECT 1 
@@ -57,7 +57,7 @@ class Messages
               AND Anwender = [" . $this->dbnameV . "].[dbo].[EMail].Sender
         ), 'B')
         ELSE UPPER([" . $this->dbnameV . "].[dbo].[EMail].Sender)
-    END AS Sendername FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE gelöscht  IS NULL  AND LOWER(Empfänger) = LOWER(:user) AND Datum <= CURRENT_TIMESTAMP Order by Erledigt Asc;";
+    END AS Sendername FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE gelöscht  IS NULL  AND LOWER(Empfänger) = LOWER(:user) AND Datum <= CURRENT_TIMESTAMP Order by Erledigt Asc, Datum Desc;";
         $result = $this->pdo->query($sql, $params);
         if (!empty($result)) {
             return $result;
@@ -113,13 +113,10 @@ class Messages
         FROM [" . $this->dbnameV . "].[dbo].[Grund] 
         WHERE Grund.ID = E.Grund_ID) AS grundname, 
        DATEDIFF(SECOND, '1970-01-01 00:00:00', Datum) AS created, 
-       (SELECT FORMAT(CAST(E.Datum AS DATETIME), 'dd.MM.yy')) AS FormattedDate,
-       Empfänger as Sendername
-		/*CASE WHEN (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) 
-		IS NOT NULL AND (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) != '' 
-		THEN (SELECT TOP (1) Mitarbeiter FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE Anwender = Empfänger) ELSE Empfänger END as Sendername*/
+       (SELECT FORMAT(CAST(E.Datum AS DATETIME), 'dd.MM.yy HH:mm')) AS FormattedDate,
+       Empfänger as Sendername 
         FROM [" . $this->dbnameV . "].[dbo].[EMail] E
-        WHERE LOWER(Sender) = LOWER(:user);";
+        WHERE LOWER(Sender) = LOWER(:user) ORDER BY created DESC;";
         $result = $this->pdo->query($sql, $params);
         if (!empty($result)) {
             $result = $this->groupAndFilterData($result);
@@ -198,11 +195,11 @@ class Messages
       ,[gelöschtUser],
 	  (SELECT name FROM [" . $this->dbnameV . "].[dbo].[Grund] WHERE ID=EMail.Grund_ID ) as grundname, 
 DATEDIFF(SECOND, '1970-01-01 00:00:00', Datum) AS created,
-(SELECT FORMAT(CAST([" . $this->dbnameV . "].[dbo].[EMail].Datum AS DATETIME), 'dd.MM.yy')) as FormattedDate,
+(SELECT FORMAT(CAST([" . $this->dbnameV . "].[dbo].[EMail].Datum AS DATETIME), 'dd.MM.yy HH:mm')) as FormattedDate,
 CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Anwender] = [Sender]) 
 		IS NOT NULL AND (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE  [Anwender] = [Sender]) != '' 
 		THEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] WHERE [Anwender] = [Sender]) ELSE [Sender] END as Sendername
-  FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE LOWER([gelöschtUser])=LOWER(:user);";
+  FROM [" . $this->dbnameV . "].[dbo].[EMail] WHERE LOWER([gelöschtUser])=LOWER(:user) ORDER BY FormattedDate DESC;";
         $result = $this->pdo->query($sql, $params);
         if (!empty($result)) {
             return $result;
@@ -315,19 +312,27 @@ CASE WHEN (SELECT TOP (1) [Mitarbeiter] FROM [" . $this->dbnameV . "].[dbo].[Ber
         return ($result > 0) ? true : false;
     }
     public function getAllEmpfaengerandGroupen()
-    {
-        if ($this->dbnameP != null) {
-
-            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender] where (gelöscht is Null OR gelöscht=0) AND (deaktiviert=0 OR deaktiviert is null)";
-            //$sql = "WITH RankedRows AS (SELECT p.Anwender,p.Gruppe,COALESCE(NULLIF(p.Mitarbeiter, ''), h.Mitarbeiter) AS Mitarbeiter, ROW_NUMBER() OVER (PARTITION BY p.Anwender, p.Gruppe ORDER BY p.Anwender, p.Gruppe) AS RowNum FROM  [" . $this->dbnameP . "].[dbo].[BerechtigungAnwender] p  LEFT JOIN  [" . $this->dbnameV . "].[dbo].[BerechtigungAnwender] h ON p.Anwender = h.Anwender ) SELECT Distinct Anwender, Gruppe, Mitarbeiter FROM RankedRows";
+    { 
+        $arr=[];
+        $sql =  "select distinct (Anwender) as Anwender, 'VERWALTUNG' as Gruppe , Mitarbeiter as Mitarbeiter from [" . $this->dbnameV . "].[dbo].BerechtigungAnwender where (gelöscht is null or gelöscht = 0) and (deaktiviert is null or deaktiviert = 0)   order by Anwender;";
+        $arr = $this->pdo->query($sql, []);
+        
+        if ($this->dbnameP!=null) { 
+            $sql = "select distinct (Anwender) as [Anwender], Gruppe  ,(Select Name1 + ' ' + Name2 from [" . $this->dbnameV . "].[dbo].Mitarbeiter M  where MitarbeiterId = M.id) as
+Mitarbeiter from [" . $this->dbnameP . "].[dbo].BerechtigungAnwender where
+(gelöscht is null or gelöscht = 0) and (deaktiviert is null or deaktiviert = 0)    and MitarbeiterID    
+in ( Select M.id from [" . $this->dbnameV . "].[dbo].Mitarbeiter M  where ( BeendigungDatum is  Null or beendigungdatum >= GetDate()  ) ) 
+order by Anwender";
             $result = $this->pdo->query($sql, []);
-            return (count($result) > 0) ? $result : false;
-        } else {
-            $sql = "SELECT DISTINCT [Anwender] ,[Mitarbeiter] ,[Gruppe] FROM [MedicarePflegehsw].[dbo].[BerechtigungAnwender] where (gelöscht is Null OR gelöscht=0) AND (deaktiviert=0 OR deaktiviert is null)";
-            $result = $this->pdo->query($sql, []);
-            return (count($result) > 0) ? $result : false;
+            if(count($result)>0){
+                $arr=array_merge($arr,$result);
+            }
         }
+        //$arr=asort($arr);
+            return (count($arr) > 0) ? $arr : false;
+        
     }
+
     public function getAttachmentsOnAttachmentId($id): mixed
     {
         $params = [

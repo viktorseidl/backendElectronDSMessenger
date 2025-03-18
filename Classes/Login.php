@@ -31,7 +31,11 @@ class Login
         if($result!=false){
             $roles=$this->checkBerechtigungenAnwender();
         }
-        return [$result,$roles]; 
+        $wohnbereiche=[];
+        if($result!=false){
+           $wohnbereiche=$this->checkWohnBereiche();
+        }
+        return [$result,$roles,$wohnbereiche]; 
     }
     public function loginByExternCall(): mixed
     {
@@ -96,7 +100,7 @@ class Login
         $params = [
             ':aw' => $this->userSha256
         ];
-        $result = $this->pdo->query($sql, $params);
+        $result = $this->pdo->query($sql, $params); 
         if (!empty($result)) {
             $roles=[
                 'view:notes',
@@ -113,12 +117,32 @@ class Login
                 array_push($roles,'delete:calendar');
                 array_push($roles,'print:calendar');
             }else{
-                if (substr($str, 3, 1) === '1') array_push($roles,'create:calendar');
-                if (substr($str, 4, 1) === '1') array_push($roles,'update:calendar');
-                if (substr($str, 5, 1) === '1') array_push($roles,'delete:calendar');
-                if (substr($str, 6, 1) === '1') array_push($roles,'print:calendar');
+                if (substr($str, 1, 1) === '1') array_push($roles,'view:calendar');
+                if (substr($str, 2, 1) === '1') array_push($roles,'create:calendar');
+                if (substr($str, 3, 1) === '1') array_push($roles,'update:calendar');
+                if (substr($str, 4, 1) === '1') array_push($roles,'delete:calendar');
+                if (substr($str, 5, 1) === '1') array_push($roles,'print:calendar');
             } 
             return $roles;
+        } else {
+            return [];
+        }
+    }
+    public function checkWohnBereiche(): mixed
+    { 
+        $params =[];
+        $sql = "";
+        if($this->dbtype=="pflege"){
+            $params = [
+                ':aw' => $this->userSha256
+            ];
+            $sql = "SELECT Zimmer.Station, Zimmer.Haus, Häuser.Haus AS Hausname FROM [" . $this->dbnameV . "].dbo.Zimmer INNER JOIN [" . $this->dbnameV . "].dbo.Häuser ON Häuser.id = Zimmer.haus INNER JOIN [" . $this->dbnameP . "].dbo.BerechtigungHäuser ON BerechtigungHäuser.Haus = Zimmer.Haus AND BerechtigungHäuser.Station = Zimmer.Station WHERE BerechtigungHäuser.Name =:aw GROUP BY Zimmer.Haus, Zimmer.Station, Häuser.Haus;";
+        }else{
+            $sql = "SELECT Zimmer.Station, Zimmer.Haus, Häuser.Haus AS Hausname FROM [Medicarehsw].dbo.Zimmer INNER JOIN [Medicarehsw].dbo.Häuser ON Häuser.id = Zimmer.haus GROUP BY Zimmer.Haus, Zimmer.Station, Häuser.Haus;";
+        }  
+        $result = $this->pdo->query($sql, $params);
+        if (!empty($result)) {
+            return $result;
         } else {
             return [];
         }
