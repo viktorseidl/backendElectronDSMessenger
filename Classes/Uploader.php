@@ -37,15 +37,21 @@ class Uploader
         return $compressedFilesArray;
     }
     public function getID()
-    {
-        $sql = "SELECT TOP MAX(ID) AS ID FROM [" . $this->dbnameV . "].[dbo].[EMail_Anhang]";
-        $result = $this->pdo->query($sql, []);
-        if (!empty($result)) {
-            return $result[0]['ID'] == 0 ? 1 : $result[0]['ID'];
-        } else {
-            return false;
+{
+    try {
+        $sql = "SELECT MAX(ID) AS ID FROM [" . $this->dbnameV . "].[dbo].[EMail_Anhang]";
+        $stmt = $this->pdo->query($sql,[]); // Execute the query
+
+        if ($stmt) { 
+            return $stmt[0]['ID']; // Return ID or false if NULL
         }
+        
+        return 1; // If query execution failed
+    } catch (PDOException $e) {
+        error_log("Database Error in getID(): " . $e->getMessage()); // Log the error
+        return false;
     }
+}
     public function insertFiles($filename, $fileid, $fileindex, $base64)
     {
         $params = [
@@ -65,6 +71,7 @@ class Uploader
     public function getlatestIDAndInsertFiles($File)
     {
         $lastID = $this->getID() != false ? $this->getID() : 1;
+        
         $c = 0;
         foreach ($File as $key => $value) {
             $fileName = $value[1];

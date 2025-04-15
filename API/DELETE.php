@@ -22,6 +22,15 @@ switch ($path) {
         $result = $Messages->deleteMessagesArrayOnID($IDarr);
         echo json_encode($result ?: false);
         break;
+    case 'deleteEventOnDailyView':
+        require(__DIR__ . '/../Classes/Calendar.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $obj = json_decode(base64_decode(sanitizeInput($_GET['a'] ?? '')));
+        $event = $obj->id;
+        $Calendar = new Calendar("", "", "",1);
+        $result =$Calendar->deleteEventStampOnViewDaily($obj->id);
+        echo json_encode($result ?: false);
+        break;
     case 'updateNoteDeleteOnID':
         require(__DIR__ . '/../Classes/Notes.php');
         //$IDarr = sanitizeInput($data['arr'] ?? '');

@@ -81,7 +81,7 @@ class SetupDb
     }
     public function checkIfTableExists($name): bool
     {
-        $sql = "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '" . $name . "' AND TABLE_SCHEMA = 'dbo' ";
+        $sql = "SELECT 1 FROM [" . $this->databaseV . "].INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '" . $name . "' AND TABLE_SCHEMA = 'dbo' ";
         $stm = $this->pdo->prepare($sql);
         $stm->execute();
         $result = $stm->fetch(PDO::FETCH_ASSOC);
@@ -90,7 +90,7 @@ class SetupDb
     }
     public function checkIfTableColumnAppTypeExists($name): bool
     {
-        $sql = "SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" . $name . "' AND TABLE_SCHEMA = 'dbo' AND COLUMN_NAME = 'apptype' ";
+        $sql = "SELECT 1 FROM [" . $this->databaseV . "].INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" . $name . "' AND TABLE_SCHEMA = 'dbo' AND COLUMN_NAME = 'apptype' ";
         $stm = $this->pdo->prepare($sql);
         $stm->execute();
         $result = $stm->fetch(PDO::FETCH_ASSOC);
@@ -168,21 +168,21 @@ class SetupDb
                         $result ? array_push($executed, $value . 'Table') : '';
                     }
                     break;
-                case 'EMail_Anhang':
-                    if ($this->checkIfTableExists($value) == false) {
+                case 'EMail_Anhang': 
+                    if ($this->checkIfTableColumnAppTypeExists($value)) {
                         array_push($needed, $value . 'Table');
                         $sql = " 
                             CREATE TABLE [" . $this->databaseV . "].[dbo].[EMail_Anhang] (
                             [ID] INT NOT NULL,
                             [Pos] INT NOT NULL,
-                            [Mail] TEXT NOT NULL,
+                            [Mail] VARCHAR(MAX) NOT NULL,
                             [Name] VARCHAR(100) NOT NULL, 
-                            PRIMARY KEY (`ID`, `Pos`)
+                            PRIMARY KEY ([ID], [Pos])
                         )";
                         $stm = $this->pdo->prepare($sql);
                         $result = $stm->execute();
                         $stm->closeCursor();
-                        $result ? array_push($executed, $value . 'Table') : '';
+                        $result ? array_push($executed, $value . 'Table') : ''; 
                     }
                     break;
             }

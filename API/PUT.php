@@ -25,6 +25,21 @@ switch ($path) {
         $result = $Messages->markAsReadMessageArray($ID, $readunread);
         echo json_encode($result ?: false);
         break;
+    case 'updateMoveDailyView':
+        require(__DIR__ . '/../Classes/Calendar.php');
+        //$IDarr = sanitizeInput($data['arr'] ?? '');
+        $obj = json_decode(base64_decode(sanitizeInput($_GET['a'] ?? '')));
+        $newstarthour = $obj->newstarthour;
+        $newstarthourstamp = strtotime(str_replace('.', '-', $newstarthour));
+        $oldstart = $obj->oldstart;
+        $oldstartstamp = strtotime(str_replace('.', '-', $oldstart));
+        $oldend = $obj->oldend;
+        $oldendstamp = strtotime(str_replace('.', '-', $oldend));
+        $diff=$oldendstamp-$oldstartstamp;
+        $Calendar = new Calendar("", "", "",1);
+        $result =$Calendar->updateMovementStampViewDaily($newstarthourstamp,($newstarthourstamp+$diff), $obj->id);
+        echo json_encode([$result,date('H:i',$newstarthourstamp),date('H:i',$newstarthourstamp+$diff)] ?: false);
+        break;
     case 'MarkReadMessageOnID':
         require(__DIR__ . '/../Classes/Messages.php');
         //$IDarr = sanitizeInput($data['arr'] ?? '');

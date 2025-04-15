@@ -136,9 +136,22 @@ class Login
             $params = [
                 ':aw' => $this->userSha256
             ];
-            $sql = "SELECT Zimmer.Station, Zimmer.Haus, Häuser.Haus AS Hausname FROM [" . $this->dbnameV . "].dbo.Zimmer INNER JOIN [" . $this->dbnameV . "].dbo.Häuser ON Häuser.id = Zimmer.haus INNER JOIN [" . $this->dbnameP . "].dbo.BerechtigungHäuser ON BerechtigungHäuser.Haus = Zimmer.Haus AND BerechtigungHäuser.Station = Zimmer.Station WHERE BerechtigungHäuser.Name =:aw GROUP BY Zimmer.Haus, Zimmer.Station, Häuser.Haus;";
+            $sql = "SELECT  
+    z.Station,     
+    z.Haus,
+    h.Haus AS Hausname          
+    FROM [".$this->dbnameV."].dbo.Zimmer z
+    INNER JOIN [".$this->dbnameV."].dbo.Häuser h 
+    ON 
+    h.id = CAST(z.haus as INT)
+    JOIN [".$this->dbnameP."].dbo.BerechtigungHäuser bh 
+    ON bh.Haus  = CAST(z.Haus as varchar) COLLATE SQL_Latin1_General_CP1_CI_AS
+    AND bh.Station = z.Station COLLATE SQL_Latin1_General_CP1_CI_AS
+    WHERE bh.Name COLLATE SQL_Latin1_General_CP1_CI_AS = :aw
+    GROUP BY z.Station, z.Haus, h.Haus 
+    ";
         }else{
-            $sql = "SELECT Zimmer.Station, Zimmer.Haus, Häuser.Haus AS Hausname FROM [Medicarehsw].dbo.Zimmer INNER JOIN [Medicarehsw].dbo.Häuser ON Häuser.id = Zimmer.haus GROUP BY Zimmer.Haus, Zimmer.Station, Häuser.Haus;";
+            $sql = "SELECT Zimmer.Station, Zimmer.Haus, Häuser.Haus AS Hausname FROM [".$this->dbnameV."].dbo.Zimmer INNER JOIN [".$this->dbnameV."].dbo.Häuser ON Häuser.id = Zimmer.haus WHERE ( Zimmer.deaktiviert = 0 or Zimmer.deaktiviert is Null ) AND Zimmer.Station is not null  GROUP BY Zimmer.Haus, Zimmer.Station, Häuser.Haus;";
         }  
         $result = $this->pdo->query($sql, $params);
         if (!empty($result)) {
