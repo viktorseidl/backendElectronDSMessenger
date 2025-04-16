@@ -2,7 +2,6 @@
 require('Database.php');
 
 class Calendar{
-
     public $conn;
     public $dbtype;
     public $user;
@@ -23,6 +22,971 @@ class Calendar{
             $this->dbnameV = $config['databaseVerwaltung'];
             $this->dbnameP = $config['databasePflege'];
         }
+    }
+    public function _getEvaluierungKontraktur($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       ( $year==null)?
+$query ="WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Evaluierung Kontraktur'
+) SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[KontrakturDatum] IS NOT NULL 
+        THEN FORMAT(PB.[KontrakturDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[KontrakturDatum] IS NOT NULL 
+        THEN FORMAT(PB.[KontrakturDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[KontrakturDatum] Is Not Null and     
+PB.[KontrakturDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC  
+    "
+        :
+        $query = "WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Evaluierung Kontraktur'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[KontrakturDatum] IS NOT NULL 
+        THEN FORMAT(PB.[KontrakturDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[KontrakturDatum] IS NOT NULL 
+        THEN FORMAT(PB.[KontrakturDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[KontrakturDatum] Is Not Null and     
+PB.[KontrakturDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $row){ 
+                        $row['id']='EVALKONTRA-'.$row['id'].$row['kid'];
+                        $row['titel']='Evaluierung Kontraktur';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c4f74d'; 
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Evaluierung Kontraktur'; 
+                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        unset($row['id']); 
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
+    }
+    public function _getSicherheitskontrollen($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       ( $year==null)?
+$query ="WITH Kalender AS (SELECT 
+ID AS kid,
+CASE 
+    WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+    ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+END AS katBackColor
+FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+WHERE Kategorie = 'Sicherheitstechnische Kontrolle'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN H.[Frist] IS NOT NULL 
+        THEN FORMAT(H.[Frist], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN H.[Frist] IS NOT NULL 
+        THEN FORMAT(H.[Frist], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON B.BewohnerNr = PB.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer 
+LEFT JOIN [".$this->dbnameP."].[dbo].BewohnerHilfsmittel H ON PB.BewohnerNr = H.BewohnerNr 
+CROSS JOIN Kalender K
+WHERE 
+H.[nicht aktuell] = 0 and 
+H.aktuell = 1 and
+H.[Frist] Is Not Null and     
+H.[Frist] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is not null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    "
+        :
+        $query = "WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Sicherheitstechnische Kontrolle'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN H.[Frist] IS NOT NULL 
+        THEN FORMAT(H.[Frist], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN H.[Frist] IS NOT NULL 
+        THEN FORMAT(H.[Frist], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON B.BewohnerNr = PB.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer 
+LEFT JOIN [".$this->dbnameP."].[dbo].BewohnerHilfsmittel H ON PB.BewohnerNr = H.BewohnerNr 
+CROSS JOIN Kalender K
+WHERE 
+H.[nicht aktuell] = 0 and 
+H.aktuell = 1 and
+H.[Frist] Is Not Null and     
+H.[Frist] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is not null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $row){ 
+                        $row['id']='SECKNTR-'.$row['id'].$row['kid'];
+                        $row['titel']='Sicherheitstechnische Kontrolle';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c4f74d'; 
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Sicherheitstechnische Kontrolle'; 
+                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        unset($row['id']); 
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
+    }
+    public function _getDekubitusprophylaxe($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       ( $year==null)?
+        $query ="WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Dekubitusprophylaxemaßnahmen'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[DekubitusProphylaxeDatum] IS NOT NULL 
+        THEN FORMAT(PB.[DekubitusProphylaxeDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[DekubitusProphylaxeDatum] IS NOT NULL 
+        THEN FORMAT(PB.[DekubitusProphylaxeDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[DekubitusProphylaxeDatum] Is Not Null and     
+PB.[DekubitusProphylaxeDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    "
+        :
+        $query = "WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Dekubitusprophylaxemaßnahmen'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[DekubitusProphylaxeDatum] IS NOT NULL 
+        THEN FORMAT(PB.[DekubitusProphylaxeDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[DekubitusProphylaxeDatum] IS NOT NULL 
+        THEN FORMAT(PB.[DekubitusProphylaxeDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[DekubitusProphylaxeDatum] Is Not Null and     
+PB.[DekubitusProphylaxeDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $row){ 
+                        $row['id']='DKPLAXMAS-'.$row['id'].$row['kid'];
+                        $row['titel']='Dekubitusprophylaxemaßnahmen';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c4f74d'; 
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Dekubitusprophylaxemaßnahmen'; 
+                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        unset($row['id']); 
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
+    }
+    public function _getNortonskala($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       ( $year==null)?
+        $query ="WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Nortonskala'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[BradenDatum] Is Not Null and     
+PB.[BradenDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    "
+        :
+        $query = "WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Nortonskala'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[BradenDatum] Is Not Null and     
+PB.[BradenDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $row){ 
+                        $row['id']='NRTSKL-'.$row['id'].$row['kid'];
+                        $row['titel']='Nortonskala';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c4f74d'; 
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Nortonskala'; 
+                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        unset($row['id']); 
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
+    }
+    public function _getBradenskala($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       ( $year==null)?
+        $query ="WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Bradenskala'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[BradenDatum] Is Not Null and     
+PB.[BradenDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    "
+        :
+        $query = "WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Bradenskala'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[BradenDatum] IS NOT NULL 
+        THEN FORMAT(PB.[BradenDatum], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[BradenDatum] Is Not Null and     
+PB.[BradenDatum] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $row){ 
+                        $row['id']='BDSKL-'.$row['id'].$row['kid'];
+                        $row['titel']='Bradenskala';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c4f74d'; 
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Bradenskala'; 
+                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        unset($row['id']); 
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
+    }
+    public function _getEvalBetreuung($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       ( $year==null)?
+        $query ="WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Evaluierung Betreuung'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[EvaluierungBetreuung] IS NOT NULL 
+        THEN FORMAT(PB.[EvaluierungBetreuung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[EvaluierungBetreuung] IS NOT NULL 
+        THEN FORMAT(PB.[EvaluierungBetreuung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[EvaluierungBetreuung] Is Not Null and     
+PB.[EvaluierungBetreuung] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    "
+        :
+        $query = "WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Evaluierung Betreuung'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[EvaluierungBetreuung] IS NOT NULL 
+        THEN FORMAT(PB.[EvaluierungBetreuung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[EvaluierungBetreuung] IS NOT NULL 
+        THEN FORMAT(PB.[EvaluierungBetreuung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[EvaluierungBetreuung] Is Not Null and     
+PB.[EvaluierungBetreuung] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $row){ 
+                        $row['id']='EVALBET-'.$row['id'].$row['kid'];
+                        $row['titel']='Evaluierung Betreuung';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c4f74d'; 
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Evaluierung Betreuung'; 
+                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        unset($row['id']); 
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
+    }
+    public function _getWundvermessung($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj));
+       ( $year==null)?
+        $query ="WITH Kalender AS (SELECT
+        ID AS kid,
+        CASE
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac'
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6)
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien
+    WHERE Kategorie = 'Wundvermessung'
+)
+SELECT DISTINCT
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid,
+    K.katBackColor,
+    CASE
+        WHEN PB.[Wundvermessung] IS NOT NULL
+        THEN FORMAT(PB.[Wundvermessung], 'dd.MM.yyyy')
+        ELSE NULL
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+    CASE
+        WHEN PB.[Wundvermessung] IS NOT NULL
+        THEN FORMAT(PB.[Wundvermessung], 'dd.MM.yyyy')
+        ELSE NULL
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[Wundvermessung] Is Not Null and    
+PB.[Wundvermessung] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    "
+        :
+        $query = "WITH Kalender AS (SELECT
+        ID AS kid,
+        CASE
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac'
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6)
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien
+    WHERE Kategorie = 'Wundvermessung'
+)
+SELECT DISTINCT
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid,
+    K.katBackColor,
+    CASE
+        WHEN PB.[Wundvermessung] IS NOT NULL
+        THEN FORMAT(PB.[Wundvermessung], 'dd.MM.yyyy')
+        ELSE NULL
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+    CASE
+        WHEN PB.[Wundvermessung] IS NOT NULL
+        THEN FORMAT(PB.[Wundvermessung], 'dd.MM.yyyy')
+        ELSE NULL
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[Wundvermessung] Is Not Null and    
+PB.[Wundvermessung] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) {
+            $narr=[];
+            foreach($result as $row){
+                        $row['id']='WUDVER-'.$row['id'].$row['kid'];
+                        $row['titel']='Wundvermessung';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59';
+                        $row['ColorHex']= '#c4f74d';
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0];
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX');
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL;
+                        $row['kategorie']=$row['kid'];
+                        $row['katForeColor']='#000000';  
+                        $row['katBezeichnung']='Wundvermessung';
+                        $row['fgdfgfd']=strtotime($row['Ende']);
+                        unset($row['id']);
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']);
+                        unset($row['Ende']);
+                        array_push($narr,$row);
+            }
+            return $narr;
+        }else{
+            return [];
+        }
+    }
+    public function _getWundauswertung($year=null)
+    {
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       ( $year==null)?
+        $query ="WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Wundauswertung'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[Wundauswertung] IS NOT NULL 
+        THEN FORMAT(PB.[Wundauswertung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[Wundauswertung] IS NOT NULL 
+        THEN FORMAT(PB.[Wundauswertung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[Wundauswertung] Is Not Null and     
+PB.[Wundauswertung] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    "
+        :
+        $query = "WITH Kalender AS (SELECT 
+        ID AS kid,
+        CASE 
+            WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+            ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+        END AS katBackColor
+    FROM [".$this->dbnameV."].[dbo].KalenderKategorien 
+    WHERE Kategorie = 'Wundauswertung'
+)
+SELECT DISTINCT 
+    B.BewohnerNr AS id,
+    Z.Station AS wohnbereich,
+    Z.Haus as haus,
+    K.kid, 
+    K.katBackColor,
+	CASE 
+        WHEN PB.[Wundauswertung] IS NOT NULL 
+        THEN FORMAT(PB.[Wundauswertung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Dates,
+    '#000000' AS VordergrundFarbe,
+	CASE 
+        WHEN PB.[Wundauswertung] IS NOT NULL 
+        THEN FORMAT(PB.[Wundauswertung], 'dd.MM.yyyy') 
+        ELSE NULL 
+    END AS Ende,
+    B.vorname + ' ' + B.Name AS Bewohner 
+FROM [".$this->dbnameP."].[dbo].Bewohner PB
+LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+CROSS JOIN Kalender K
+WHERE  
+PB.[Wundauswertung] Is Not Null and     
+PB.[Wundauswertung] = CAST('".$monat."' AS DATE) and  
+B.Abgangsdatum is null AND 
+B.BewohnerNr < 70000 ORDER BY Dates ASC
+    ";
+    $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $row){ 
+                        $row['id']='WUAUS-'.$row['id'].$row['kid'];
+                        $row['titel']='Wundauswertung';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c4f74d'; 
+                        $row['katBackColor']= '#c4f74d';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Wundauswertung'; 
+                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        unset($row['id']); 
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
     }
     public function _getEvaluierung($year=null)
     {
@@ -846,9 +1810,7 @@ WHERE
             return $narr; 
         }else{
             return [];
-        }
-    
-         
+        } 
     } 
     public function _getBewohnerGenehmigungen($year=null)
     {
@@ -1070,6 +2032,22 @@ WHERE
         $BewohnerPflegeVisite=$this->_getPflegeVisite();   
         //GET ALL EVALUIERUNG BEWOHNER          
         $BewohnerEvaluierung=$this->_getEvaluierung();   
+        //GET ALL WUNDAUSWERTUNG BEWOHNER          
+        $BewohnerWundauswertung=$this->_getWundauswertung();   
+        //GET ALL WUNDVERMESSUNG BEWOHNER          
+        $BewohnerWundvermessung=$this->_getWundvermessung();   
+        //GET ALL EVALUIERUNG BETREUUNG BEWOHNER          
+        $BewohnerEvalBetreuung=$this->_getEvalBetreuung();   
+        //GET ALL BRADENSKALA BEWOHNER          
+        $BewohnerBradenskala=$this->_getBradenskala();   
+        //GET ALL NORTONSKALA BEWOHNER          
+        $BewohnerNortonskala=$this->_getNortonskala();   
+        //GET ALL DEKUBITUSPROPHYLAXE BEWOHNER          
+        $BewohnerDekubitusprophylaxe=$this->_getDekubitusprophylaxe();   
+        //GET ALL SICHERHEITSKONTROLLEN BEWOHNER          
+        $BewohnerSicherheitskontrollen=$this->_getSicherheitskontrollen();   
+        //GET ALL EVALUIERUNG KONTRACTUR BEWOHNER          
+        $BewohnerEvaluierungKontraktur=$this->_getEvaluierungKontraktur();   
         //$BewohnerPersAusweis=[];
     $query= "SELECT TOP(1000) K.ID AS id,COALESCE( 
         NULLIF(KK.Bezeichnung COLLATE SQL_Latin1_General_CP1_CI_AS, ''), 
@@ -1131,10 +2109,10 @@ WHERE
                 }
                 array_push($narr,$row);
             }
-            $narr=array_merge($GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung, $narr);
+            $narr=array_merge($GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur, $narr);
             return $narr;
         } else {
-            return array_merge($GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung);
+            return array_merge($GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur);
         }
     }
     public function getKategorien(): mixed {
@@ -1148,6 +2126,7 @@ WHERE
             array(
                 "ID"=>$row['ID'],
                 "typ"=>$row['Suchbegriff'],
+                "kategoriename"=>$row['Kategorie'],
                 "bezeichnung"=>$row['Bezeichnung'],
                 "colorhex"=>$row['ColorHex'],
                 "vdeleted"=>$row['gelöscht']==1?true:false,
@@ -1190,8 +2169,7 @@ WHERE
         $hex = str_pad(dechex($decimal), 6, "0", STR_PAD_LEFT);
         // Add the # to create a proper hex color code
         return "#" . strtoupper($hex);
-    }
-      
+    } 
     public function hexColorToDecimal($hexColor): float|int|string {
         // Remove # if present
         $hexColor = ltrim(strtoupper($hexColor), '#');
