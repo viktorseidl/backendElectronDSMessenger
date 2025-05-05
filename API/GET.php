@@ -113,7 +113,7 @@ switch ($path) {
         require(__DIR__ . '/../Classes/Calendar.php');
         $data = base64_decode(sanitizeInput($_GET['a'] ?? ''));
         $user = explode(':', $data)[0];
-        $dayDate = explode(':', $data)[1];
+        $dayDate = explode(':', $data)[1]; 
         $dbtype = (base64_decode(sanitizeInput($_GET['t'] ?? ''))) == "P" ? 'pflege' : 'verwaltung';
         $Calendar = new Calendar($dbtype, $user, $dayDate,1);
         $result = $Calendar->getAllEvents();
@@ -121,7 +121,7 @@ switch ($path) {
         http_response_code(200);
         break;
     case 'getKategorien':
-        require(__DIR__ . '/../Classes/Calendar.php'); 
+        require(__DIR__ . '/../Classes/Calendar.php');  
         $Calendar = new Calendar("", "", "","");
         $result = $Calendar->getKategorien();
         echo json_encode($result);
