@@ -116,7 +116,7 @@ switch ($path) {
         $dayDate = explode(':', $data)[1]; 
         $dbtype = (base64_decode(sanitizeInput($_GET['t'] ?? ''))) == "P" ? 'pflege' : 'verwaltung';
         $Calendar = new Calendar($dbtype, $user, $dayDate,1);
-        $result = $Calendar->getAllEvents();
+        $result = $Calendar->getAllEvents('day');
         echo json_encode($result);
         http_response_code(200);
         break;

@@ -23,8 +23,9 @@ class Calendar{
             $this->dbnameP = $config['databasePflege'];
         }
     }
-    public function _getErgebniserfassung($year=null)//Done
+    public function _getErgebniserfassung($qtype=null)//Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -141,8 +142,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getEvaluierungKontraktur($year=null) //Done
+    public function _getEvaluierungKontraktur($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -260,8 +262,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getSicherheitskontrollen($year=null) //Done
+    public function _getSicherheitskontrollen($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -386,8 +389,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getDekubitusprophylaxe($year=null) //Done
+    public function _getDekubitusprophylaxe($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -506,8 +510,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getNortonskala($year=null) //Done
+    public function _getNortonskala($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -626,8 +631,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getBradenskala($year=null) //Done
+    public function _getBradenskala($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -746,8 +752,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getEvalBetreuung($year=null) //Done
+    public function _getEvalBetreuung($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -866,8 +873,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getWundvermessung($year=null) //Done
+    public function _getWundvermessung($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj));
        ( $year==null)?
@@ -986,8 +994,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         }
     }
-    public function _getWundauswertung($year=null) //Done
+    public function _getWundauswertung($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -1106,8 +1115,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getEvaluierung($year=null) //Done
+    public function _getEvaluierung($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -1226,8 +1236,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getPflegeVisite($year=null)//Done
+    public function _getPflegeVisite($qtype=null)//Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -1346,8 +1357,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     }
-    public function _getSchwerbehindertausweis($year=null) //Done
+    public function _getSchwerbehindertausweis($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -1466,8 +1478,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
             return [];
         } 
     } 
-    public function _gettabellenwohngeld($year=null) //Done
+    public function _gettabellenwohngeld($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -1590,8 +1603,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
     
          
     } 
-    public function _getpflegewohngeld($year=null) //Done
+    public function _getpflegewohngeld($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -1712,8 +1726,9 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC
     
          
     } 
-    public function _getPersonalAusweis($year=null) //Done
+    public function _getPersonalAusweis($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
        ( $year==null)?
@@ -1820,8 +1835,9 @@ WHERE
     
          
     } 
-    public function _getBewohnerGEZ($year=null) //Done
+    public function _getBewohnerGEZ($qtype=null) //Done
     {
+        $year=null;
         $dateObj = strtotime($this->requestDate);
         $monat=date('Y-m-d', intval($dateObj)); 
          
@@ -1929,8 +1945,9 @@ WHERE
             return [];
         } 
     } 
-    public function _getBewohnerGenehmigungen($year=null) //Done
+    public function _getBewohnerGenehmigungen($qtype=null) //Done
     { 
+        $year=null;
        ( $year==null)?
         $query = "SELECT 
 gid as GID,
@@ -2021,8 +2038,9 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
     
          
     } 
-    public function _getMitarbeiterGeburtstage($year=null)//Done
+    public function _getMitarbeiterGeburtstage($qtype=null)//Done
     {
+        $year=null;
          $dateformat=explode('.',$this->requestDate)[0].'.'.explode('.',$this->requestDate)[1]; 
        ( $year==null)?
         $query = "SELECT Name1 AS Name,Name2 AS Vorname, ID as id, MONTH(Geburtsdatum) AS monat, DAY(Geburtsdatum) AS tag, (SELECT TOP(1) CASE 
@@ -2109,13 +2127,13 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
         }
     
     }
-    public function _getBewohnerGeburtstage($year=null)//Done
+    public function _getBewohnerGeburtstage($qtype=null)//Done
     {     
-        
+        $year=null;
         $dateformat=explode('.',$this->requestDate)[0].'.'.explode('.',$this->requestDate)[1];  
         $query = "SELECT DISTINCT B.BewohnerNr,B.Name,B.Vorname, Z.Haus as haus,Z.Station as wohnbereich, FORMAT(B.Geburtsdatum, 'dd.MM') as datum, 
-        (SELECT TOP(1) id as eid FROM  MedicareHirtenbach.dbo.KalenderKategorien WHERE Kategorie='Geburtstage der Bewohner' and (gelöschtPflege is null or gelöschtPflege = 0)) as eid
-        FROM MedicareHirtenbach.dbo.Bewohner B JOIN MedicareHirtenbach.dbo.Zimmer Z ON B.Zimmer=Z.ID
+        (SELECT TOP(1) id as eid FROM  [".$this->dbnameV."].dbo.KalenderKategorien WHERE Kategorie='Geburtstage der Bewohner' and (gelöschtPflege is null or gelöschtPflege = 0)) as eid
+        FROM [".$this->dbnameV."].dbo.Bewohner B JOIN [".$this->dbnameV."].dbo.Zimmer Z ON B.Zimmer=Z.ID
         WHERE AbgangsDatum IS NULL AND B.Geburtsdatum is not NULL  AND FORMAT(B.Geburtsdatum, 'dd.MM')='".$dateformat."'";
          
         $result = $this->conn->query($query, []);
@@ -2156,45 +2174,294 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
             return[];
         }      
     } 
-    public function getAllEvents():mixed { 
+    public function checkWohnBereiche(): mixed
+    { 
+        $params =[];
+        $sql = "";
+        if($this->dbtype=="pflege"){
+            $params = [
+                ':aw' => $this->user
+        ];
+    $sql = "SELECT  
+    z.Station,     
+    z.Haus,
+    h.Haus AS Hausname          
+    FROM [".$this->dbnameV."].dbo.Zimmer z
+    INNER JOIN [".$this->dbnameV."].dbo.Häuser h 
+    ON 
+    h.id = CAST(z.haus as INT)
+    JOIN [".$this->dbnameP."].dbo.BerechtigungHäuser bh 
+    ON bh.Haus  = CAST(z.Haus as varchar) COLLATE SQL_Latin1_General_CP1_CI_AS
+    AND bh.Station = z.Station COLLATE SQL_Latin1_General_CP1_CI_AS
+    WHERE bh.Name COLLATE SQL_Latin1_General_CP1_CI_AS = :aw
+    GROUP BY z.Station, z.Haus, h.Haus 
+    ";
+        }else{
+            $sql = "SELECT Zimmer.Station, Zimmer.Haus, Häuser.Haus AS Hausname FROM [".$this->dbnameV."].dbo.Zimmer INNER JOIN [".$this->dbnameV."].dbo.Häuser ON Häuser.id = Zimmer.haus WHERE ( Zimmer.deaktiviert = 0 or Zimmer.deaktiviert is Null ) AND Zimmer.Station is not null  GROUP BY Zimmer.Haus, Zimmer.Station, Häuser.Haus;";
+        }  
+        $result = $this->conn->query($sql, $params);
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return [];
+        }
+    }
+    /**
+     * HELPER FUNCTIONS 
+     * - extractDistinctStationsAndHaeuser (gibt alle Stationen und Häuser zurück worauf der User berechtigt ist)
+     * - getUntilRRuleString (Gibt den entsprechenden EndDatumZeitString zurück für die RRule)
+     * - isSameDay (Prüft ob das Datum innerhalb des Abruf Datums liegt bei $qType=='day')
+     * - calculateEventTimeStAndEd  (Gibt die Start und Ende Zeit an hand von startzeit und Dauer zurück)
+     * - getMinutesDifferenceRR  (Gibt die Duration für Tagesansicht zurück)
+     */
+    public function extractDistinctStationsAndHaeuser($dataArr) {
+        $stations = [];
+        $haeuser = [];
+    
+        foreach ($dataArr as $item) {
+            if (isset($item['Station'])) {
+                $stations[] = $item['Station'];
+            }
+            if (isset($item['Haus'])) {
+                $haeuser[] = $item['Haus'];
+            }
+        }
+    
+        // Remove duplicates using array_unique and reindex
+        $stations = array_values(array_unique($stations));
+        $haeuser = array_values(array_unique($haeuser));
+    
+        return [
+            'stations' => $stations,
+            'haeuser' => $haeuser
+        ];
+    }
+    public function getUntilRRuleString(DateTime $date, string $mode): string {
+        $utcDate = clone $date;
+        $utcDate->setTimezone(new DateTimeZone('UTC'));
+    
+        switch (strtolower($mode)) {
+            case 'day':
+                $utcDate->setTime(23, 59, 59);
+                break;
+            case 'week':
+                $utcDate->modify('sunday this week')->setTime(23, 59, 59);
+                break;
+            case 'month':
+                $utcDate->modify('last day of this month')->setTime(23, 59, 59);
+                break;
+            case 'year':
+                $utcDate->setDate((int)$utcDate->format('Y'), 12, 31)->setTime(23, 59, 59);
+                break;
+            default:
+                throw new InvalidArgumentException("Invalid mode: $mode");
+        }
+    
+        return $utcDate->format('Ymd\THis\Z');
+    }
+    public function isSameDay(DateTime $date1, DateTime $date2): bool {
+        return $date1->format('Y-m-d') === $date2->format('Y-m-d');
+    }
+    public function calculateEventTimeStAndEd(int $durationMinutes, DateTime $startTime): array {
+        $start = clone $startTime;
+    
+        // Calculate tentative end time
+        $end = clone $startTime;
+        $end->modify("+$durationMinutes minutes");
+      
+        return [
+            'start' => $start->format('H:i'),
+            'end' => $end->format('H:i'),
+            'startobj' => $start,
+            'endobj' => $end,
+        ];
+    }
+    public function getMinutesDifferenceRR($startTime, $endTime) { 
+        $diff = $startTime->diff($endTime);
+        $sum=$diff->h * 60 + $diff->i;
+        $endsum=intval($sum/15);
+        return $endsum;
+    }
+    public function _getRRuleEvents($qtype=null)//Done
+    {     
+        $narr=[]; //Rückgabe-Array;
+        $bereiche=$this->checkWohnBereiche();
+        $bereicheArrays=$this->extractDistinctStationsAndHaeuser($bereiche);
+        $stationenNames='';
+        $haeuserNames='';
+        if(count($bereicheArrays['stations'])>0){
+            $stationenNames="'" . implode("','",$bereicheArrays['stations']). "'";
+        }
+        if(count($bereicheArrays['haeuser'])>0){
+            $haeuserNames="'" . implode("','",$bereicheArrays['haeuser']). "'";  
+        }
+        $dbpart='V';
+        if($this->dbtype=='pflege'){
+        $dbpart='P';
+        }   
+        $query = "SELECT *, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [MedicareHirtenbach].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [MedicareHirtenbach].dbo.rrevents R WHERE R.starttime<='".$this->requestDate."'  AND (R.until is null or R.until>='".$this->requestDate."')  AND ((R.anwender='HAE') or (R.anwender!='HAE' AND systempart='PUB'))  AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY R.duration DESC "; 
+        $result = $this->conn->query($query, []);  
+        /**
+         @value $date erzeuge DateTimeObject aus Abruf-Datum für die Berechnungen
+         */
+        $date = DateTime::createFromFormat('d.m.Y', $this->requestDate, new DateTimeZone('Europe/Berlin'));
+        /**
+         @value $qtype Sicherstellen das $qtype nicht NULL ist für korrekte Berechnungen
+         */
+        $qtype==null?'day':$qtype;
+
+        
+        if (is_array($result)&&count($result)>0) { 
+            foreach($result as $row){
+                /**
+                 Fixiere festes Start- und Ende-Muster für die Berechnungen (Optimierung der Rechenleistung) 
+                @value DTStart (immer Datum des Abrufdatum als Start "day"=tag, "week"=Montag der Woche, "month"= 1. des Monats, "year"= 1. Januar)
+                @value festesende (richtet sich nach UNTIL wenn TotalCount == NULL)
+                */
+                $DTStart=DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin'));
+                if($qtype=='day'){
+                    $DTStart=explode('T',$this->getUntilRRuleString($DTStart, $qtype))[0].'T000000';
+                }else if($qtype=='week'){
+                    $monday = clone $DTStart;
+                    $monday->modify('monday this week');
+                    $DTStart=$DTStart->format('Ymd').'T000000';
+                }else if($qtype=='month'){
+                    $DTStart=$DTStart->format('Ym').'01T000000';
+                }else if($qtype=='year'){
+                    $DTStart=$DTStart->format('Y').'0101T000000';                    
+                }else{
+                    $DTStart=explode('T',$DTStart)[0].'T000000';                    
+                } 
+                $festesende='';
+                if($row['until']==NULL AND $row['totalcount']==NULL){
+                    $festesende=';UNTIL='.$this->getUntilRRuleString($date, $qtype);
+                }else if($row['until']!=NULL AND $row['totalcount']==NULL){
+                    $untdate = DateTime::createFromFormat('Y-m-d H:i:s.u', $row['until'], new DateTimeZone('Europe/Berlin'));
+                    $festesende=';UNTIL='.$this->getUntilRRuleString($untdate, $qtype);
+                }else if($row['until']==NULL AND $row['totalcount']!=NULL){
+                    $festesende=';COUNT='.$row['totalcount'];
+                }else{
+                    $festesende=';UNTIL='.$this->getUntilRRuleString($date, $qtype);
+                }  
+                 $rrule = new RRule\RRule("DTSTART;TZID=Europe/Berlin:".$DTStart."\nRRULE:".$row['rrulestring'].$festesende.""); 
+                 $timings=$this->calculateEventTimeStAndEd(120,new DateTime('2025-05-15 22:30'));
+                foreach ($rrule as $key=>$occurrence) { 
+                    if($this->isSameDay($occurrence,$date)){
+                        /**
+                         Erstelle das Object für die übergabe
+                         */
+                        array_push($narr,//$row['id'].' - '.$occurrence->format('D d M Y')
+                        array(
+                            "id"=>'RRule-'.$key.'-'.$row['id'],
+                            "titel"=>$row['kname']!=NULL?(trim($row['kname'])):'Privat',
+                            "kategorie"=>$row['kategorie']!=NULL?intval($row['kategorie']):0,
+                            "katBezeichnung"=>'rrule', 
+                            "ColorHex"=>'#515152',
+                            "betreff"=>strlen(trim($row['betreff']))>0?$row['betreff']:'keine Angaben',
+                            "zeitraum"=>intval($row['duration']),
+                            "von"=>$timings['start'],
+                            "bis"=>$timings['end'] ,
+                            "boxColor"=>$row['hexcolor'] ,
+                            "VerwaltungPflege"=>$row['systempart'] ,
+                            "duration"=>$this->getMinutesDifferenceRR($timings['startobj'],$timings['endobj']) ,
+                            "datum"=>$timings['startobj']->format('Y-m-d') ,
+                            "ersteller"=>$row['anwender'] ,
+                            "eventTyp"=>null ,
+                            "haus"=>$row['location'] ,
+                            "wohnbereich"=>$row['floor'] ,
+                            "isAlarm"=>$row['alertrule']==null?false:true ,
+                            "isAlarmStamp"=>$row['alertrule']==null?null:$row['alertrule'] ,
+                            "isEditable"=>false ,
+                            "isNoteAttached"=>$row['isnote']==null?null:$row['isnote'] ,
+                            "isPublic"=>false ,
+                            "katBackColor"=>$row['hexcolor'] ,
+                            "realtimeend"=>$timings['end'] ,
+                            "realtimeendDate"=>$timings['endobj']->format('d.m.Y'), 
+                            "realtimestart"=>$timings['start'] ,
+                            "realtimestartDate"=>$timings['startobj']->format('d.m.Y'),
+                            "time"=>intval($timings['startobj']->format('H'))
+                            
+                        ) 
+                        ); 
+                    }
+                }
+                  
+            }
+            return $narr;
+        }else{
+            return[];
+        }     
+        
+        /*$row['id']='B-'.$row['BewohnerNr'];
+                $row['titel']=$row['Name'].', '.$row['Vorname'];
+                $row['realtimestart']='00:00';
+                $row['realtimeend']='23:59'; 
+                $row['ColorHex']='#faa161'; 
+                $row['datum']=explode('.',$this->requestDate)[2].'-'.explode('.',$row['datum'])[1].'-'.explode('.',$row['datum'])[0]; 
+                $row['realtimestartDate']=$row['datum'].'.'.explode('.',$this->requestDate)[2];
+                $row['realtimeendDate']=$row['datum'].'.'.explode('.',$this->requestDate)[2];
+                $row['isNoteAttached']=NULL;
+                $row['time']=intval(0);
+                $row['duration']=intval(24*4);
+                $row['ersteller']= strtoupper('XXXXXX'); 
+                $row['isAlarm']=false;
+                $row['isAlarmStamp']=NULL;
+                $row['isEditable']=false;
+                $row['eventTyp']=$row['eid'];
+                $row['isPublic']=true;
+                $row['VerwaltungPflege']=NULL;  
+                $row['kategorie']=$row['eid'];
+                $row['katBackColor']='#faa161';
+                $row['katForeColor']='#000000';
+                $row['katBezeichnung']='BewohnerGeburtstag'; 
+                unset($row['datum']);
+                unset($row['Name']);
+                unset($row['Vorname']);
+                unset($row['BewohnerNr']); 
+                array_push($narr,$row);*/
+    } 
+    public function getAllEvents($qtype=null):mixed { 
+
+       $RRulesMy=$this->_getRRuleEvents($qtype);
+         
         //GET ALL GEBURTSTAGE BEWOHNER 
-        $GeburtstageBewohner=$this->_getBewohnerGeburtstage();
+        $GeburtstageBewohner=$this->_getBewohnerGeburtstage($qtype);
         //GET ALL GEBURTSTAGE MITARBEITER          
-        $GeburtstageMitarbeiter=$this->_getMitarbeiterGeburtstage();
+        $GeburtstageMitarbeiter=$this->_getMitarbeiterGeburtstage($qtype);
         //GET ALL GENEHMIGUNGEN BEWOHNER          
-        $BewohnerGenehmigungen=$this->_getBewohnerGenehmigungen();      
+        $BewohnerGenehmigungen=$this->_getBewohnerGenehmigungen($qtype);      
         //GET ALL GENEHMIGUNGEN BEWOHNER          
-        $BewohnerGEZ=$this->_getBewohnerGEZ();      
+        $BewohnerGEZ=$this->_getBewohnerGEZ($qtype);      
         //GET ALL PERSONALAUSWEIS BEWOHNER          
-        $BewohnerPersAusweis=$this->_getPersonalAusweis();   
+        $BewohnerPersAusweis=$this->_getPersonalAusweis($qtype);   
         //GET ALL PERSONALAUSWEIS BEWOHNER          
-        $BewohnerPflegewohngeld=$this->_getpflegewohngeld();   
+        $BewohnerPflegewohngeld=$this->_getpflegewohngeld($qtype);   
         //GET ALL TABELLENWOHNGELD BEWOHNER          
-        $BewohnerTabellenwohngeld=$this->_gettabellenwohngeld();   
+        $BewohnerTabellenwohngeld=$this->_gettabellenwohngeld($qtype);   
         //GET ALL SCHWERBEHINDERTENAUSWEIS BEWOHNER          
-        $BewohnerSchwerbehindertausweis=$this->_getSchwerbehindertausweis();   
+        $BewohnerSchwerbehindertausweis=$this->_getSchwerbehindertausweis($qtype);   
         //GET ALL PFLEGEVISITE BEWOHNER          
-        $BewohnerPflegeVisite=$this->_getPflegeVisite();   
+        $BewohnerPflegeVisite=$this->_getPflegeVisite($qtype);   
         //GET ALL EVALUIERUNG BEWOHNER          
-        $BewohnerEvaluierung=$this->_getEvaluierung();   
+        $BewohnerEvaluierung=$this->_getEvaluierung($qtype);   
         //GET ALL WUNDAUSWERTUNG BEWOHNER          
-        $BewohnerWundauswertung=$this->_getWundauswertung();   
+        $BewohnerWundauswertung=$this->_getWundauswertung($qtype);   
         //GET ALL WUNDVERMESSUNG BEWOHNER          
-        $BewohnerWundvermessung=$this->_getWundvermessung();   
+        $BewohnerWundvermessung=$this->_getWundvermessung($qtype);   
         //GET ALL EVALUIERUNG BETREUUNG BEWOHNER          
-        $BewohnerEvalBetreuung=$this->_getEvalBetreuung();   
+        $BewohnerEvalBetreuung=$this->_getEvalBetreuung($qtype);   
         //GET ALL BRADENSKALA BEWOHNER          
-        $BewohnerBradenskala=$this->_getBradenskala();   
+        $BewohnerBradenskala=$this->_getBradenskala($qtype);   
         //GET ALL NORTONSKALA BEWOHNER          
-        $BewohnerNortonskala=$this->_getNortonskala();   
+        $BewohnerNortonskala=$this->_getNortonskala($qtype);   
         //GET ALL DEKUBITUSPROPHYLAXE BEWOHNER          
-        $BewohnerDekubitusprophylaxe=$this->_getDekubitusprophylaxe();   
+        $BewohnerDekubitusprophylaxe=$this->_getDekubitusprophylaxe($qtype);   
         //GET ALL SICHERHEITSKONTROLLEN BEWOHNER          
-        $BewohnerSicherheitskontrollen=$this->_getSicherheitskontrollen();   
+        $BewohnerSicherheitskontrollen=$this->_getSicherheitskontrollen($qtype);   
         //GET ALL EVALUIERUNG KONTRACTUR BEWOHNER          
-        $BewohnerEvaluierungKontraktur=$this->_getEvaluierungKontraktur();   
+        $BewohnerEvaluierungKontraktur=$this->_getEvaluierungKontraktur($qtype);   
         //GET ALL ERGEBNISERFASSUNG BEWOHNER          
-        $BewohnerErgebniserfassung=$this->_getErgebniserfassung();   
+        $BewohnerErgebniserfassung=$this->_getErgebniserfassung($qtype);   
         //$BewohnerPersAusweis=[];
     $query= "SELECT TOP(1000) K.ID AS id,COALESCE( 
         NULLIF(KK.Bezeichnung COLLATE SQL_Latin1_General_CP1_CI_AS, ''), 
@@ -2256,7 +2523,7 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
                 $row['isAlarm']=($row['isAlarm']&&($row['isAlarm']=='TRUE'))?true:false;
                 $row['isEditable']=($row['isEditable']&&($row['isEditable']=='TRUE'))?true:false;
                 $row['isPublic']=($row['isEditable']&&($row['isEditable']=='TRUE'))?true:false;
-                $row['duration']=intval($row['duration']);
+                $row['duration']=$this->getMinutesDifference($row['realtimestart'],$row['realtimeend'])/15;
                 $row['time']=intval($row['time']);
                 $row['id']=intval($row['id']); 
                 $row['ersteller']= strtoupper($row['ersteller']); 
@@ -2269,10 +2536,10 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
                  
                 array_push($narr,$row);
             }
-            $narr=array_merge($GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung, $narr);
+            $narr=array_merge($RRulesMy,$GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung, $narr);
             return $narr;
         } else {
-            return array_merge($GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung);
+            return array_merge($RRulesMy,$GeburtstageMitarbeiter,$GeburtstageBewohner,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung);
         }
     }
     public function getKategorien(): mixed {
@@ -2308,6 +2575,13 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
         }else{
             return false;
         }
+    }
+    public function getMinutesDifference($startTime, $endTime) {
+        $start = DateTime::createFromFormat('H:i', $startTime);
+        $end = DateTime::createFromFormat('H:i', $endTime);
+    
+        $diff = $start->diff($end);
+        return $diff->h * 60 + $diff->i;
     }
     public function deleteEventStampOnViewDaily($id) { 
         $query="DELETE FROM [".$this->dbnameV."].dbo.Kalender WHERE ID=".$id." ";
@@ -2367,6 +2641,71 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
                 return 0; // Invalid type
         }
     }
+    public function getHausIdOnName($name):int{
+        $params=array(":N"=>$name);
+        $query="SELECT TOP(1) ID FROM [".$this->dbnameV."].dbo.[Häuser] WHERE Haus=:N ";
+        $result = $this->conn->query($query, $params);
+        if (is_numeric($result[0]['ID'])){ 
+            return $result[0]['ID'];
+        }else{
+            return 0;
+        }
+    }
+    public function getKategorieIdOnName($name):int{  
+        $params=array(":N"=>$name);
+        $query="SELECT TOP(1) ID FROM [".$this->dbnameV."].dbo.KalenderKategorien WHERE Kategorie=:N ";
+        $result = $this->conn->query($query, $params);
+        if (!empty($result)){ 
+            return $result[0]['ID'];
+        }else{
+            return 0;
+        }
+    }
+    public function convertGermanWeekdaysToEnglish(array $germanDays): array {
+        $dayMap = [
+            'MO' => 'MO', // Montag
+            'DI' => 'TU', // Dienstag
+            'MI' => 'WE', // Mittwoch
+            'DO' => 'TH', // Donnerstag
+            'FR' => 'FR', // Freitag
+            'SA' => 'SA', // Samstag
+            'SO' => 'SU'  // Sonntag
+        ];
+    
+        $englishDays = [];
+    
+        foreach ($germanDays as $day) {
+            $upperDay = strtoupper($day);
+            if (isset($dayMap[$upperDay])) {
+                $englishDays[] = $dayMap[$upperDay];
+            }
+        }
+    
+        return $englishDays;
+    }
+    public function convertNumberedDaysToEnglishString(array $input): string {
+        $dayMap = [
+            'MO' => 'MO',
+            'DI' => 'TU',
+            'MI' => 'WE',
+            'DO' => 'TH',
+            'FR' => 'FR',
+            'SA' => 'SA',
+            'SO' => 'SU'
+        ];
+    
+        $output = [];
+    
+        foreach ($input as $item) {
+            [$number, $day] = explode(':', $item);
+            $day = strtoupper(trim($day));
+            if (isset($dayMap[$day])) {
+                $output[] = $number . $dayMap[$day];
+            }
+        }
+    
+        return implode(',', $output);
+    }
     public function insertNewRRuleEvent(
         $Anwender,
         $AnwenderTyp,
@@ -2390,140 +2729,320 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
         $rruleTerminJaehrlichJahresMusterDatum_TageArray,
         $rruleTerminJaehrlichJahresMusterJahrestag_TageArray,
         $rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray,
-        $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray
-    ):mixed {
-          /*
---------------------------------------------
-Zeitkonvertierung in ein Zeitobjekt
-$datetime = new DateTime($_POST['yourDate'] ?? ''); // or $_GET / json input
-$date = $datetime->format('Y-m-d');    // "2025-05-16"
-$time = $datetime->format('H:i:s');    // "15:15:00" (if local timezone set)
-$datetime->setTimezone(new DateTimeZone('Europe/Berlin'));
- */ 
-/*
-    id INT PRIMARY KEY IDENTITY(1,1),
-    anwender VARCHAR(50),    
-    betreff VARCHAR(255) DEFAULT 'Terminierung',         
-    isnote VARCHAR(512) DEFAULT NULL,      
-    alertrule DATETIME DEFAULT NULL,         
-    systempart VARCHAR(10) CHECK (systempart IN ('ME','P','V','PUB')), 
-    location INT DEFAULT NULL,     
-    floor VARCHAR(50),        
-    starttime DATETIME NOT NULL,             
-    rfrequency VARCHAR(10) CHECK (rfrequency IN ('DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY')),  
-    intervalnumber INT DEFAULT 1,          
-    byday VARCHAR(20),                 
-    bymonthday VARCHAR(20),          
-    bymonth VARCHAR(20),             
-    byhour VARCHAR(50),         
-    wkst VARCHAR(2),           
-    byyearday VARCHAR(100),    
-    byweekno VARCHAR(50),       
-    totalcount INT,                       
-    until DATETIME DEFAULT NULL,                   
-    changed VARCHAR(80) DEFAULT NULL,
-    kategorie INT NULL,
-    hexcolor VARCHAR(10) DEFAULT NULL,
-    rrulestring VARCHAR(255) DEFAULT NULL,   
-    duration INT NULL 
- */
-/*
-    1. DAILY
-FREQ=DAILY;INTERVAL=1
+        $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray,
+        $terminFarbe
+    ):mixed { 
+        $errorcount=[];
+        $startdate=$rruleTerminStartDatumZeit!=null?new DateTime($rruleTerminStartDatumZeit):array_push($errorcount,"Startdatum/Uhrzeit: Bitte geben Sie ein gültiges Startdatum an.");
+        $startdate->setTimezone(new DateTimeZone('Europe/Berlin'));
+        $startdatum=$rruleTerminStartDatumZeit!=null?$startdate->format('d.m.Y'):null; //'09.05.2025 16:00:00'
+        $startzeit=$rruleTerminStartDatumZeit!=null?$startdate->format('H:i:s'):null;
+        $dbstartstamp=$rruleTerminStartDatumZeit!=null?$startdatum.' '.$startzeit:date('d.m.Y H:i:s',time());
+        if($startdate&&$rruleTerminStartDatumZeit!=null&&$startdate<new DateTime("now",new DateTimeZone('Europe/Berlin'))){
+            array_push($errorcount,"Startdatum/Uhrzeit: Bitte geben Sie ein gültiges Startdatum an.");
+        }
+        if($terminKategorie=='Privater Eintrag'){
+            $terminKategorieID=0;
+        }else{
+            $terminKategorieID=$this->getKategorieIdOnName($terminKategorie)==0?0:$this->getKategorieIdOnName($terminKategorie);
+            $terminKategorieID==0?array_push($errorcount,"Kategorie: Die ausgewählte Kategorie konnte nicht gefunden werden."):'';
+        }    
+        $Anwender=strlen(trim($Anwender))>0?strtoupper(trim($Anwender)):array_push($errorcount,"Rechte: Sie besitzen keine Rechte Einträge in den Kalender zu setzen."); 
+        $terminNote=NULL;
+        if(strlen(trim($terminBemerkung))>0&&$terminBemerkung!=null){
+            $terminNote=$terminBemerkung;
+        }
+        if(strlen(trim($terminSichtbarkeit))==0||$terminSichtbarkeit==null){
+            array_push($errorcount,"Sichtbarkeit: Bitte wählen Sie aus welche Stufe verwendet werden soll.");
+        }
+        $isErinnerung=NULL;
+        if($terminErinnerungSwitch==true){
+        $erinnerungdate=$terminErinnerungDatum!=null?new DateTime($terminErinnerungDatum):array_push($errorcount,"Erinnerungdatum/Uhrzeit: Bitte geben Sie ein gültiges Erinnerungsdatum an.");
+        $erinnerungdate->setTimezone(new DateTimeZone('Europe/Berlin'));
+        $erinnerungdatum=$terminErinnerungDatum!=null?$erinnerungdate->format('d.m.Y'):null;
+        $erinnerung=$terminErinnerungDatum!=null?$erinnerungdate->format('H:i:s'):null;
+        $dberrstamp=$terminErinnerungDatum!=null?$erinnerungdatum.' '.$erinnerung:null;
+        $isErinnerung=$dberrstamp==null?NULL:$dberrstamp;
+        } 
+        $hausID=NULL;
+        $wohnbereich=NULL;
+        if($terminSichtbarkeit=='P'&&$terminWohnbereich!=null){ 
+            $haus=explode(':X:',$terminWohnbereich)[0];
+            $haus=(strlen(trim($haus))>0&&$this->getHausIdOnName($haus)>0)?$this->getHausIdOnName($haus):NULL;
+            $wohnbereich=explode(':X:',$terminWohnbereich)[1];
+        } 
+        $intervalMuster=1;
+        if($rruleTerminWiederholungsMuster>1){
+            $intervalMuster=$rruleTerminWiederholungsMuster;
+        }
+        $ablaufdatum=NULL;
+        if($rruleTerminEndeType=="DATE"){
+            if($rruleTerminEndeTypeDatum=="NODATE"){
+                array_push($errorcount,"Endedatum: Bitte wählen Sie ein korrektes Ablaufdatum für die Serie aus.");
+            }else{
+                $terminEndeDate=$rruleTerminEndeTypeDatum!=null?new DateTime($rruleTerminEndeTypeDatum):array_push($errorcount,"Endedatum: Bitte wählen Sie ein korrektes Ablaufdatum für die Serie aus.");
+                $rruleTerminEndeTypeDatum!=null?$terminEndeDate->setTimezone(new DateTimeZone('Europe/Berlin')):'';
+                $terminEndedatum=$rruleTerminEndeTypeDatum!=null?$terminEndeDate->format('d.m.Y'):null; 
+                $dbterminEndestamp=$rruleTerminEndeTypeDatum!=null?$terminEndedatum.' 00:00:00':null;
+                $ablaufdatum=$dbterminEndestamp==null?NULL:$dbterminEndestamp;
+            }
+        }
+        $totalCount=NULL;
+        if($rruleTerminEndeType=="REPEAT"){
+            if($rruleTerminEndeTypeWiederholungen==0){
+                array_push($errorcount,"Wiederholungen: Bitte geben Sie mindestens 1 Wiederholung an oder ändern Sie die Einstellungen.");
+            }else{
+                $totalCount=is_numeric($rruleTerminEndeTypeWiederholungen)&&$rruleTerminEndeTypeWiederholungen>0?$rruleTerminEndeTypeWiederholungen:NULL;
+            }
+        }
+        $terminDauer=1440;
+        if($rruleTerminDauer<1){
+            array_push($errorcount,"Dauer: Bitte legen Sie den Zeitraum des Termin fest.");
+        }else{
+            $terminDauer=$rruleTerminDauer;
+        }
+        $BYDAY=NULL;
+        $BYMONTHDAY=NULL;
+        $BYMONTH=NULL;
+        $BYHOUR=$rruleTerminStartDatumZeit!=null&&$terminDauer!=1440?$startdate->format('H'):0;
+        $WKST=NULL;
+        $BYYEARDAY=NULL;
+        $BYWEEKNO=NULL;
+        $RRulestring='FREQ=';
+        if($RRuleFrequenz=='DAILY'){
+            $RRulestring.='DAILY';
+            $RRulestring.=';INTERVAL='.$intervalMuster;
+        }else if($RRuleFrequenz=='WEEKLY'){
+            $RRulestring.='WEEKLY';
+            $RRulestring.=';INTERVAL='.$intervalMuster;
+            if(count($rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray)>0){
+                $RRulestring.=';BYDAY='.implode(',', $this->convertGermanWeekdaysToEnglish($rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray));
+                $BYDAY=implode(',', $this->convertGermanWeekdaysToEnglish($rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray));
+            }  
+        }else if($RRuleFrequenz=='MONTHLY'){
+            $RRulestring.='MONTHLY';
+            $RRulestring.=';INTERVAL='.$intervalMuster;
+            if(count($rruleTerminJaehrlichJahresMusterDatum_TageArray)>0&&$rruleTerminMonatMuster=='DAY'){
+                $RRulestring.=';BYMONTHDAY='.implode(',',$rruleTerminJaehrlichJahresMusterDatum_TageArray );
+                $BYMONTHDAY=implode(',',$rruleTerminJaehrlichJahresMusterDatum_TageArray );
+            }
+            if(count($rruleTerminJaehrlichJahresMusterDatum_TageArray)>0&&$rruleTerminMonatMuster=='WEEKDAY'){
+                $RRulestring.=';BYDAY='.$this->convertNumberedDaysToEnglishString($rruleTerminJaehrlichJahresMusterDatum_TageArray);
+                $BYDAY=$this->convertNumberedDaysToEnglishString($rruleTerminJaehrlichJahresMusterDatum_TageArray);
+            } 
+        }else{
+            $RRulestring.='YEARLY';
+            $RRulestring.=';INTERVAL='.$intervalMuster; 
+            if($rruleTerminJahresMuster=='DATUM'&&count($rruleTerminJaehrlichJahresMusterDatum_MonateArray)>0&&count($rruleTerminJaehrlichJahresMusterDatum_TageArray)>0){
+                $RRulestring.=';BYMONTH='.implode(',',$rruleTerminJaehrlichJahresMusterDatum_MonateArray );
+                $RRulestring.=';BYMONTHDAY='.implode(',',$rruleTerminJaehrlichJahresMusterDatum_TageArray );
+                $BYMONTHDAY=implode(',',$rruleTerminJaehrlichJahresMusterDatum_TageArray );
+                $BYMONTH=implode(',',$rruleTerminJaehrlichJahresMusterDatum_MonateArray );
+            }
+            if($rruleTerminJahresMuster=='WOCHENTAGMONAT'&&count($rruleTerminJaehrlichJahresMusterDatum_MonateArray)>0&&count($rruleTerminJaehrlichJahresMusterDatum_TageArray)>0){
+                $RRulestring.=';BYMONTH='.implode(',',$rruleTerminJaehrlichJahresMusterDatum_MonateArray );
+                $RRulestring.=';BYDAY='.$this->convertNumberedDaysToEnglishString($rruleTerminJaehrlichJahresMusterDatum_TageArray);
+                $BYDAY=$this->convertNumberedDaysToEnglishString($rruleTerminJaehrlichJahresMusterDatum_TageArray);
+                $BYMONTH=implode(',',$rruleTerminJaehrlichJahresMusterDatum_MonateArray );
+            }
+            if($rruleTerminJahresMuster=='YEARDAY'&&count($rruleTerminJaehrlichJahresMusterJahrestag_TageArray)>0){ 
+                $RRulestring.=';BYYEARDAY='.implode(',',$rruleTerminJaehrlichJahresMusterJahrestag_TageArray );
+                $BYYEARDAY=implode(',',$rruleTerminJaehrlichJahresMusterJahrestag_TageArray );
+            }
+            if($rruleTerminJahresMuster=='WEEKNUMBER'&&count($rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray)>0&&count($rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray)>0){ 
+                $RRulestring.=';BYWEEKNO='.implode(',',$rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray );
+                $RRulestring.=';BYDAY='.implode(',', $this->convertGermanWeekdaysToEnglish($rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray));
+                $BYDAY=implode(',', $this->convertGermanWeekdaysToEnglish($rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray));
+                $BYWEEKNO=implode(',',$rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray );
+            } 
+        }
 
-2. WEEKLY
-FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE,FR;
-
-3. MONTHLY
-FREQ=MONTHLY;INTERVAL=1;BYMONTHDAY=1,15 ->Spezifische Tage
-FREQ=MONTHLY;INTERVAL=1;BYDAY=1MO ->Spezifische Wochentage
-
-4. YEARLY
-FREQ=YEARLY;INTERVAL=1;BYMONTH=6;BYMONTHDAY=1
-FREQ=YEARLY;INTERVAL=1;BYYEARDAY=100
-FREQ=YEARLY;INTERVAL=1;BYMONTH=6;BYDAY=1MO  ; (1st Monday of June)
-FREQ=YEARLY;INTERVAL=1;BYWEEKNO=20;BYDAY=MO 
--------------------------------------------    
-         */
+        if(count($errorcount)>0){
+            return $errorcount;
+        }else{
+            //Everything OK make Insert in Table 
+              
+            $query = "INSERT INTO [".$this->dbnameV."].dbo.rrevents (
+            anwender,
+            betreff,
+            isnote,
+            ".(($isErinnerung!=NULL)?"alertrule,":"")."             
+            systempart,
+            [location],
+            floor,
+            starttime,
+            rfrequency,
+            intervalnumber,
+            byday,
+            bymonthday,
+            bymonth,
+            byhour,
+            wkst,
+            byyearday,
+            byweekno,
+            totalcount,
+            ".(($ablaufdatum!=NULL)?"until,":"")."              
+            changed,
+            kategorie,
+            [hexcolor],
+            rrulestring,
+            duration) VALUES (
+            '".$Anwender."',
+            '".$terminBetreff."',
+            ".(($terminNote !== NULL|| !empty(trim($terminNote)))?"'".$terminNote."'":"NULL").",
+            ".(($isErinnerung!=NULL)?"'".$isErinnerung."',":"")." 
+            '".$terminSichtbarkeit."',
+            ".(($hausID !== NULL)?intval($hausID):"NULL").",
+            ".(($wohnbereich !== NULL)?"'".$wohnbereich."'":"NULL").",
+            '".date('d.m.Y H:i:s', strtotime($dbstartstamp))."',
+            '".$RRuleFrequenz."',
+            ".intval($intervalMuster).",
+            ".(($BYDAY !== NULL)?"'".$BYDAY."'":"NULL").",
+            ".(($BYMONTHDAY !== NULL)?"'".$BYMONTHDAY."'":"NULL").", 
+            ".(($BYMONTH !== NULL)?"'".$BYMONTH."'":"NULL").",  
+            '".$BYHOUR."',  
+            ".(($WKST !== NULL)?"'".$WKST."'":"NULL").", 
+            ".(($BYYEARDAY !== NULL)?"'".$BYYEARDAY."'":"NULL").",  
+            ".(($BYWEEKNO !== NULL)?"'".$BYWEEKNO."'":"NULL").",   
+            ".(($totalCount !== NULL)?"'".$totalCount."'":"NULL").",  
+            ".(($ablaufdatum!=NULL)?"'".$ablaufdatum."' ,":"")."  
+            NULL,
+            ".(($terminKategorieID !== 0)?$terminKategorieID:"NULL").",
+            '".$terminFarbe."',
+            '".$RRulestring."',
+            ".$terminDauer.") ";
+            //return $query;
+            if ($this->conn->query($query, [])){ 
+                return true;
+            }else{
+                return ['Fehlgeschlagen: Der Eintrag konnte nicht gespeichert werde. Bitte prüfen Sie die Daten und versuchen es erneut.'];
+            }
+        }
+        
+        
+  
     }
+     
     public function insertNewStandardEvent(
         $Anwender,
-        $AnwenderTyp,
-        $terminBetreff,
-        $terminKategorie,
-        $terminSichtbarkeit,
-        $terminWohnbereich,
-        $terminBemerkung,
-        $terminErinnerungSwitch,
-        $terminErinnerungDatum,
-        $RRuleFrequenz,
-        $rruleTerminDauer,
-        $rruleTerminStartDatumZeit,
-        $rruleTerminEndeType,
-        $rruleTerminEndeTypeDatum,
-        $rruleTerminEndeTypeWiederholungen,
-        $rruleTerminJahresMuster,
-        $rruleTerminMonatMuster,
-        $rruleTerminWiederholungsMuster,
-        $rruleTerminJaehrlichJahresMusterDatum_MonateArray,
-        $rruleTerminJaehrlichJahresMusterDatum_TageArray,
-        $rruleTerminJaehrlichJahresMusterJahrestag_TageArray,
-        $rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray,
-        $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray
+            $AnwenderTyp,
+            $terminBetreff,
+            $terminKategorie,
+            $terminSichtbarkeit,
+            $terminWohnbereich,
+            $terminBemerkung,
+            $terminErinnerungSwitch,
+            $terminErinnerungDatum,
+            $standardTerminStartDatumZeit,
+            $standardTerminEndeDatumZeit
     ):mixed {
-          /*
---------------------------------------------
-Zeitkonvertierung in ein Zeitobjekt
-$datetime = new DateTime($_POST['yourDate'] ?? ''); // or $_GET / json input
-$date = $datetime->format('Y-m-d');    // "2025-05-16"
-$time = $datetime->format('H:i:s');    // "15:15:00" (if local timezone set)
-$datetime->setTimezone(new DateTimeZone('Europe/Berlin'));
- */ 
-/*
-    id INT PRIMARY KEY IDENTITY(1,1),
-    anwender VARCHAR(50),    
-    betreff VARCHAR(255) DEFAULT 'Terminierung',         
-    isnote VARCHAR(512) DEFAULT NULL,      
-    alertrule DATETIME DEFAULT NULL,         
-    systempart VARCHAR(10) CHECK (systempart IN ('ME','P','V','PUB')), 
-    location INT DEFAULT NULL,     
-    floor VARCHAR(50),        
-    starttime DATETIME NOT NULL,             
-    rfrequency VARCHAR(10) CHECK (rfrequency IN ('DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY')),  
-    intervalnumber INT DEFAULT 1,          
-    byday VARCHAR(20),                 
-    bymonthday VARCHAR(20),          
-    bymonth VARCHAR(20),             
-    byhour VARCHAR(50),         
-    wkst VARCHAR(2),           
-    byyearday VARCHAR(100),    
-    byweekno VARCHAR(50),       
-    totalcount INT,                       
-    until DATETIME DEFAULT NULL,                   
-    changed VARCHAR(80) DEFAULT NULL,
-    kategorie INT NULL,
-    hexcolor VARCHAR(10) DEFAULT NULL,
-    rrulestring VARCHAR(255) DEFAULT NULL,   
-    duration INT NULL 
- */
-/*
-    1. DAILY
-FREQ=DAILY;INTERVAL=1
+        $errorcount=[];
+        $startdate=$standardTerminStartDatumZeit!=null?new DateTime($standardTerminStartDatumZeit):array_push($errorcount,"Startdatum/Uhrzeit: Bitte geben Sie ein gültiges Startdatum an.");
+        $startdate->setTimezone(new DateTimeZone('Europe/Berlin'));
+        $startdatum=$standardTerminStartDatumZeit!=null?$startdate->format('d.m.Y'):null;
+        $startzeit=$standardTerminStartDatumZeit!=null?$startdate->format('H:i:s'):null;
+        $startzeitdb=$standardTerminStartDatumZeit!=null?$startdate->format('H:i'):null;
+        $dbstartstamp=$standardTerminStartDatumZeit!=null?$startdatum.' '.$startzeit:date('d.m.Y H:i:s',time());
+        if($startdate&&$standardTerminStartDatumZeit!=null&&$startdate<new DateTime("now",new DateTimeZone('Europe/Berlin'))){
+            array_push($errorcount,"Startdatum/Uhrzeit: Bitte geben Sie ein gültiges Startdatum an.");
+        }
+        $endedate=$standardTerminEndeDatumZeit!=null?new DateTime($standardTerminEndeDatumZeit):array_push($errorcount,"Startdatum/Uhrzeit: Bitte geben Sie ein gültiges Startdatum an.");
+        $endedate->setTimezone(new DateTimeZone('Europe/Berlin'));
+        $endedatum=$standardTerminStartDatumZeit!=null?$endedate->format('d.m.Y'):null;
+        $endezeit=$standardTerminStartDatumZeit!=null?$endedate->format('H:i:s'):null;
+        $endezeitdb=$standardTerminStartDatumZeit!=null?$endedate->format('H:i'):null;
+        $dbendestamp=$standardTerminEndeDatumZeit!=null?$endedatum.' '.$endezeit:date('d.m.Y H:i:s',time());
+        if($endedate&&$standardTerminEndeDatumZeit!=null&&$endedate<new DateTime("now",new DateTimeZone('Europe/Berlin'))){
+            array_push($errorcount,"Enddatum/Uhrzeit: Bitte geben Sie ein gültiges Enddatum an.");
+        }
+        if($terminKategorie=='Privater Eintrag'){
+            $terminKategorieID=0;
+        }else{
+            $terminKategorieID=$this->getKategorieIdOnName($terminKategorie)==0?0:$this->getKategorieIdOnName($terminKategorie);
+            $terminKategorieID==0?array_push($errorcount,"Kategorie: Die ausgewählte Kategorie konnte nicht gefunden werden."):'';
+        }    
+        $Anwender=strlen(trim($Anwender))>0?strtoupper(trim($Anwender)):array_push($errorcount,"Rechte: Sie besitzen keine Rechte Einträge in den Kalender zu setzen."); 
+        $terminNote=NULL;
+        if(strlen(trim($terminBemerkung))>0&&$terminBemerkung!=null){
+            $terminNote=trim($terminBemerkung);
+        }
+        if(strlen(trim($terminSichtbarkeit))==0||$terminSichtbarkeit==null){
+            array_push($errorcount,"Sichtbarkeit: Bitte wählen Sie aus welche Stufe verwendet werden soll.");
+        } 
+        $isErinnerung=NULL;
+        if($terminErinnerungSwitch==true){
+        $erinnerungdate=$terminErinnerungDatum!=null?new DateTime($terminErinnerungDatum):array_push($errorcount,"Erinnerungdatum/Uhrzeit: Bitte geben Sie ein gültiges Erinnerungsdatum an.");
+        $erinnerungdate->setTimezone(new DateTimeZone('Europe/Berlin'));
+        $erinnerungdatum=$terminErinnerungDatum!=null?$erinnerungdate->format('d.m.Y'):null;
+        $erinnerung=$terminErinnerungDatum!=null?$erinnerungdate->format('H:i:s'):null;
+        $dberrstamp=$terminErinnerungDatum!=null?$erinnerungdatum.' '.$erinnerung:null;
+        $isErinnerung=$dberrstamp==null?NULL:$dberrstamp;
+            if($erinnerungdate&&$terminErinnerungDatum!=null&&$erinnerungdate<new DateTime("now",new DateTimeZone('Europe/Berlin'))){
+                array_push($errorcount,"Erinnerungdatum/Uhrzeit: Bitte geben Sie ein gültiges Erinnerungsdatum an.");
+            }
+        } 
+        $hausID=NULL;
+        $wohnbereich=NULL;
+        if($terminSichtbarkeit=='P'&&$terminWohnbereich!=null){ 
+            $haus=explode(':X:',$terminWohnbereich)[0];
+            $hausID=(strlen(trim($haus))>0&&$this->getHausIdOnName($haus)>0)?$this->getHausIdOnName($haus):NULL;
+            $wohnbereich=explode(':X:',$terminWohnbereich)[1];
+        } 
 
-2. WEEKLY
-FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE,FR;
 
-3. MONTHLY
-FREQ=MONTHLY;INTERVAL=1;BYMONTHDAY=1,15 ->Spezifische Tage
-FREQ=MONTHLY;INTERVAL=1;BYDAY=1MO ->Spezifische Wochentage
-
-4. YEARLY
-FREQ=YEARLY;INTERVAL=1;BYMONTH=6;BYMONTHDAY=1
-FREQ=YEARLY;INTERVAL=1;BYYEARDAY=100
-FREQ=YEARLY;INTERVAL=1;BYMONTH=6;BYDAY=1MO  ; (1st Monday of June)
-FREQ=YEARLY;INTERVAL=1;BYWEEKNO=20;BYDAY=MO 
--------------------------------------------    
-         */
+        if(count($errorcount)>0){
+            return $errorcount;
+        }else{
+            //Everything OK make Insert in Table 
+              $parts=NULL;
+              if($terminKategorie=='Privater Eintrag'&&$terminSichtbarkeit=='ME')
+              {
+                $parts=NULL;
+              }else if($terminSichtbarkeit=='P'){
+                $parts='P';
+              }else if($terminSichtbarkeit=='PUB'){
+                $parts=NULL;
+              }else{
+                  $parts='V';
+              }
+            $query = "INSERT INTO [".$this->dbnameV."].dbo.Kalender (
+            Beginnzeit,
+            Endezeit,
+            Betreff,
+            Beginn,            
+            Ende,
+            Notiz,
+            Erinnerung,
+            Farbe,
+            [User],
+            Part,
+            Haus,
+            Wohnbereich,
+            Kategorie,
+            Hdz,
+            changed) VALUES (
+            '".$startzeitdb."',
+            '".$endezeitdb."', 
+            '".$terminBetreff."',
+            '".date('Y-m-d H:i:s', strtotime($dbstartstamp))."',         
+            '".date('Y-m-d H:i:s', strtotime($dbendestamp))."',
+            ".(($terminNote !== NULL|| !empty(trim($terminNote)))?"'".$terminNote."'":"''").",
+            ".(($isErinnerung!=NULL)?"'".$isErinnerung."'":"NULL").",
+            '114196255',
+            '".(($terminKategorie=='Privater Eintrag'&&$terminSichtbarkeit=='ME')?$Anwender:"")."',
+            ".(($parts!=NULL)?"'".$parts."'":"NULL").", 
+            ".(($hausID !== NULL)?intval($hausID):"NULL").",
+            ".(($wohnbereich !== NULL)?"'".$wohnbereich."'":"NULL").",
+            ".(($terminKategorieID !== 0)?$terminKategorieID:"NULL").",
+            '".$Anwender."',NULL) ";
+            
+            if ($this->conn->query($query, [])){ 
+                return true;
+            }else{
+                return ['Fehlgeschlagen: Der Eintrag konnte nicht gespeichert werde. Bitte prüfen Sie die Daten und versuchen es erneut.'];
+            }
+        } 
+ 
     }
 }
 

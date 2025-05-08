@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
+require __DIR__.'/vendor/autoload.php';
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_GET['path'] ?? null; // Assume the frontend sends requests with a 'path' query parameter
 $data = json_decode(file_get_contents('php://input'), true);

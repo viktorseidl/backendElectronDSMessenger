@@ -91,17 +91,23 @@ switch ($path) {
         $terminBemerkung = sanitizeInput($data->terminBemerkung ?? ''); //Bemerkung EmptyString/String
         $terminErinnerungSwitch = sanitizeInput($data->terminErinnerungSwitch ?? ''); //Erinnerung Switch true/false
         $terminErinnerungDatum = sanitizeInput($data->terminErinnerungDatum ?? ''); //Erinnerung Datum null/ true/2025-05-22T22:00:00.000Z
-        $Calendar = new Calendar("V", $Anwender, "",1);
-        /*$result=$Calendar->insertNewStandardEvent();*/ 
-        echo json_encode([$Anwender,
-        $AnwenderTyp,
-        $terminBetreff,
-        $terminKategorie,
-        $terminSichtbarkeit,
-        $terminWohnbereich,
-        $terminBemerkung,
-        $terminErinnerungSwitch,
-        $terminErinnerungDatum,] ?: false);
+        $standardTerminStartDatumZeit = sanitizeInput($data->standardTerminStartDatumZeit ?? ''); //Erinnerung Datum null/ true/2025-05-22T22:00:00.000Z
+        $standardTerminEndeDatumZeit = sanitizeInput($data->standardTerminEndeDatumZeit ?? ''); //Erinnerung Datum null/ true/2025-05-22T22:00:00.000Z
+        $Calendar = new Calendar("V", $Anwender, "",1); 
+        $result=$Calendar->insertNewStandardEvent(
+            $Anwender,
+            $AnwenderTyp,
+            $terminBetreff,
+            $terminKategorie,
+            $terminSichtbarkeit,
+            $terminWohnbereich,
+            $terminBemerkung,
+            $terminErinnerungSwitch,
+            $terminErinnerungDatum,
+            $standardTerminStartDatumZeit,
+            $standardTerminEndeDatumZeit
+        ); 
+        echo json_encode($result ?: false);
         break;
     case 'addNewRRuleEventToKalendar':
         require(__DIR__ . '/../Classes/Calendar.php'); 
@@ -111,6 +117,7 @@ switch ($path) {
         $terminBetreff = sanitizeInput($data->terminBetreff ?? ''); //Betreff des Termins 
         $terminKategorie = sanitizeInput($data->terminKategorie ?? ''); //Kategorie des Termins = Name der Kategorie ->  Geburtstag der Bewohner
         $terminSichtbarkeit = sanitizeInput($data->terminSichtbarkeit ?? ''); //Sichtbarkeit ["ME"=Privat,"PUB"=Öffentlich (Pflege+Verwaltung),"P"=Pflege,"V"=Verwaltung] 
+        $terminFarbe = sanitizeInput($data->rruleTerminColor ?? ''); //Sichtbarkeit ["ME"=Privat,"PUB"=Öffentlich (Pflege+Verwaltung),"P"=Pflege,"V"=Verwaltung] 
         $terminWohnbereich = sanitizeInput($data->terminWohnbereich ?? ''); //Name des Wohnbereich
         $terminBemerkung = sanitizeInput($data->terminBemerkung ?? ''); //Bemerkung EmptyString/String
         $terminErinnerungSwitch = sanitizeInput($data->terminErinnerungSwitch ?? ''); //Erinnerung Switch true/false
@@ -131,7 +138,7 @@ switch ($path) {
         $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray = sanitizeInput($data->rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray ?? ''); // Wochennummer array [ 1, 2, 52 ]
         
         $Calendar = new Calendar("V", $Anwender, "",1);
-        $result=$Calendar->insertNewRRuleEvent(
+         $result=$Calendar->insertNewRRuleEvent(
             $Anwender,
             $AnwenderTyp,
             $terminBetreff,
@@ -154,34 +161,10 @@ switch ($path) {
             $rruleTerminJaehrlichJahresMusterDatum_TageArray,
             $rruleTerminJaehrlichJahresMusterJahrestag_TageArray,
             $rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray,
-            $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray
-        );
-         
- 
-        echo json_encode([
-            $Anwender,
-            $AnwenderTyp,
-            $terminBetreff,
-            $terminKategorie,
-            $terminSichtbarkeit,
-            $terminWohnbereich,
-            $terminBemerkung,
-            $terminErinnerungSwitch,
-            $terminErinnerungDatum,
-            $RRuleFrequenz,
-            $rruleTerminDauer,
-            $rruleTerminStartDatumZeit,
-            $rruleTerminEndeType,
-            $rruleTerminEndeTypeDatum,
-            $rruleTerminEndeTypeWiederholungen,
-            $rruleTerminJahresMuster,
-            $rruleTerminMonatMuster,
-            $rruleTerminWiederholungsMuster,
-            $rruleTerminJaehrlichJahresMusterDatum_MonateArray,
-            $rruleTerminJaehrlichJahresMusterDatum_TageArray,
-            $rruleTerminJaehrlichJahresMusterJahrestag_TageArray,
-            $rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray,
-            $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray] ?: false); 
+            $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray,
+            $terminFarbe
+        ); 
+        echo json_encode($result ?: false); 
         break;
     default:
         echo json_encode(['error' => 'Invalid API endpoint']);
