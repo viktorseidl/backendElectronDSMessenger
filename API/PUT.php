@@ -40,6 +40,38 @@ switch ($path) {
         $result =$Calendar->updateMovementStampViewDaily($newstarthourstamp,($newstarthourstamp+$diff), $obj->id);
         echo json_encode([$result,date('H:i',$newstarthourstamp),date('H:i',$newstarthourstamp+$diff)] ?: false);
         break;
+    case 'updateStandardEventInKalendar':
+        require(__DIR__ . '/../Classes/Calendar.php');
+        $data = json_decode($data);
+        $terminID = sanitizeInput($data->terminID ?? ''); // Username  like 'HAE' 
+        $Anwender = sanitizeInput($data->terminAnwender ?? ''); // Username  like 'HAE' 
+        $AnwenderTyp = sanitizeInput($data->terminAnwenderTyp ?? ''); //P - V
+        $terminBetreff = sanitizeInput($data->terminBetreff ?? ''); //Betreff des Termins 
+        $terminKategorie = sanitizeInput($data->terminKategorie ?? ''); //Kategorie des Termins = Name der Kategorie ->  Geburtstag der Bewohner
+        $terminSichtbarkeit = sanitizeInput($data->terminSichtbarkeit ?? ''); //Sichtbarkeit ["ME"=Privat,"PUB"=Öffentlich (Pflege+Verwaltung),"P"=Pflege,"V"=Verwaltung] 
+        $terminWohnbereich = sanitizeInput($data->terminWohnbereich ?? ''); //Name des Wohnbereich
+        $terminBemerkung = sanitizeInput($data->terminBemerkung ?? ''); //Bemerkung EmptyString/String
+        $terminErinnerungSwitch = sanitizeInput($data->terminErinnerungSwitch ?? ''); //Erinnerung Switch true/false
+        $terminErinnerungDatum = sanitizeInput($data->terminErinnerungDatum ?? ''); //Erinnerung Datum null/ true/2025-05-22T22:00:00.000Z
+        $standardTerminStartDatumZeit = sanitizeInput($data->standardTerminStartDatumZeit ?? ''); //Erinnerung Datum null/ true/2025-05-22T22:00:00.000Z
+        $standardTerminEndeDatumZeit = sanitizeInput($data->standardTerminEndeDatumZeit ?? ''); //Erinnerung Datum null/ true/2025-05-22T22:00:00.000Z
+        $Calendar = new Calendar("V", $Anwender, "",1); 
+        $result=$Calendar->updateStandardEvent(
+            $terminID,
+            $Anwender,
+            $AnwenderTyp,
+            $terminBetreff,
+            $terminKategorie,
+            $terminSichtbarkeit,
+            $terminWohnbereich,
+            $terminBemerkung,
+            $terminErinnerungSwitch,
+            $terminErinnerungDatum,
+            $standardTerminStartDatumZeit,
+            $standardTerminEndeDatumZeit
+        ); 
+        echo json_encode($result ?: false);
+        break;
     case 'MarkReadMessageOnID':
         require(__DIR__ . '/../Classes/Messages.php');
         //$IDarr = sanitizeInput($data['arr'] ?? '');

@@ -26,9 +26,10 @@ switch ($path) {
         require(__DIR__ . '/../Classes/Calendar.php');
         //$IDarr = sanitizeInput($data['arr'] ?? '');
         $obj = json_decode(base64_decode(sanitizeInput($_GET['a'] ?? '')));
-        $event = $obj->id;
+        $eventid = $obj->id;
+        $eventtype = $obj->typed;
         $Calendar = new Calendar("", "", "",1);
-        $result =$Calendar->deleteEventStampOnViewDaily($obj->id);
+        $result =$Calendar->deleteEventStampOnViewDaily($eventid,$eventtype);
         echo json_encode($result ?: false);
         break;
     case 'updateNoteDeleteOnID':
