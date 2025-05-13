@@ -120,6 +120,16 @@ switch ($path) {
         echo json_encode($result);
         http_response_code(200);
         break;
+    case 'getRRuleDates':
+        require(__DIR__ . '/../Classes/Calendar.php');
+        $data = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $id = explode(':', $data)[0];
+        $dayDate = explode(':', $data)[1]; 
+        $Calendar = new Calendar( 'verwaltung', "", $dayDate,1);
+        $result = $Calendar->getRRuleDates($id,$dayDate);
+        echo json_encode($result ?: false);
+        http_response_code(200);
+        break;
     case 'getKategorien':
         require(__DIR__ . '/../Classes/Calendar.php');  
         $Calendar = new Calendar("", "", "","");

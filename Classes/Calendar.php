@@ -2191,6 +2191,93 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
             return[];
         }      
     } 
+    public function deleteRRuleException($id=null,$date=null) {  
+        $query = "DELETE FROM  [".$this->dbnameV."].dbo.rrevent_exceptions WHERE rrevent_id='".$id."' AND  excluded_date=CAST('".$date."' AS DATE)   "; 
+        return ($this->conn->query($query, []))?true:false;
+    }
+    public function insertRRuleException($id=null,$date=null) {  
+        $query = "INSERT INTO  [".$this->dbnameV."].dbo.rrevent_exceptions (rrevent_id,excluded_date) VALUES ('".$id."','".$date."') "; 
+        return ($this->conn->query($query, []))?true:false;
+    }
+    public function getallExceptionsOnID($id=null) { 
+         
+        $query = "SELECT rrevent_id as id,excluded_date  FROM  [".$this->dbnameV."].dbo.rrevent_exceptions E WHERE E.rrevent_id='".$id."' ORDER BY E.rrevent_id DESC ";
+        $result = $this->conn->query($query, []);  
+        return $result;
+    }
+    public function getTwoLetterWeekday( $date): string {
+    // ISO-8601 numeric representation of the day (1 = Monday, 7 = Sunday)
+    $weekdayNumber = (int) $date;//->format('N');
+
+    $map = [
+        1 => 'MO',
+        2 => 'DI',
+        3 => 'MI',
+        4 => 'DO',
+        5 => 'FR',
+        6 => 'SA',
+        7 => 'SO',
+    ];
+
+    return $map[$weekdayNumber];
+    }
+    public function getRRuleDates($id=null,$date=null){
+        $Exceptions=$this->getallExceptionsOnID($id);
+        $narr=[];
+        $query = "SELECT * FROM  [".$this->dbnameV."].dbo.rrevents R WHERE R.id='".$id."' "; 
+        $result = $this->conn->query($query, []);   
+        $date = DateTime::createFromFormat('d.m.Y', $date, new DateTimeZone('Europe/Berlin'));
+    
+        if (is_array($result)&&count($result)>0) {
+            
+            foreach($result as $row){ 
+                $max=400;
+            $counter=0;
+                
+                $DTStart=DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin'));
+                $DTStart=$DTStart->format('Ymd').'T000000'; 
+                $festdate=DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s',time()+(24*30*24*3600)),new DateTimeZone('Europe/Berlin'));
+                $festesende=';UNTIL='.$festdate->format('Ymd\THis\Z');
+                if($row['until']==NULL AND $row['totalcount']==NULL){
+                    $festesende=';UNTIL='.$festdate->format('Ymd\THis\Z');
+                }else if($row['until']!=NULL AND $row['totalcount']==NULL){
+                    $untdate = DateTime::createFromFormat('Y-m-d H:i:s.u', $row['until'], new DateTimeZone('Europe/Berlin')); 
+                    $festesende=';UNTIL='.$untdate->format('Ymd\THis\Z');
+                }else if($row['until']==NULL AND $row['totalcount']!=NULL){
+                    $festesende=';COUNT='.$row['totalcount'];
+                } 
+                 $rrule = new RRule\RRule("DTSTART;TZID=Europe/Berlin:".$DTStart."\nRRULE:".$row['rrulestring'].$festesende.""); 
+                 $timings=$this->calculateEventTimeStAndEd($row['duration'],DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin')));
+                   
+                 foreach ($rrule as $key=>$occurrence) { 
+                    if($counter<$max){
+                     if($this->isDateExcluded($Exceptions,$row['id'],$occurrence)==false){
+                        //Not excluded
+                         $exclude=false;
+                     }else{
+                        //excluded
+                         $exclude=true;
+                     } 
+                     array_push($narr,array(
+                            "RRObjectId"=>intval($id),
+                            "count"=>$counter,
+                            "realtimeendtag"=>$this->getTwoLetterWeekday($occurrence->format('N')) ,
+                            "realtimeend"=>$timings['end'] ,
+                            "realtimeendDate"=>$occurrence->format('d.m.Y'), 
+                            "realtimestarttag"=>$this->getTwoLetterWeekday($occurrence->format('N')) ,
+                            "realtimestart"=>$timings['start'] ,
+                            "realtimestartDate"=>$occurrence->format('d.m.Y'),
+                            "excluded"=>$exclude
+                        ));
+                    } 
+                     $counter++;
+                }
+            }
+            return $narr;
+        }else{
+            return [];
+        }
+    }
     public function checkWohnBereiche(): mixed
     { 
         $params =[];
@@ -2233,10 +2320,11 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
      * - isDateExcluded  (Gibt die Duration für Tagesansicht zurück)
      * - getallExceptions  (Gibt die Duration für Tagesansicht zurück)
      * - addColonToOffsets  (Formatiert byday)
+     * - convertToGermanWeekdays  (Formatiert Englisches Format zurück ins deutsche Format für frontend)
      */
     public function addColonToOffsets(array $arr): array
     {
-        return array_map(
+        $converted= array_map(
             static function (string $item): string {
                 // -?\d+  → optional minus + 1‒n digits
                 // [A-Z]+ → 1‒n letters (FR, MO, TU …)
@@ -2244,6 +2332,12 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
             },
             $arr
         );
+        $narr=[];
+        foreach($converted as $value){
+            $begin=explode(':',$value);
+            array_push($narr,$begin[0].':'.$this->convertToGermanWeekdays([$begin[1]])[0]);
+        }
+        return $narr;
     }
     public function extractDistinctStationsAndHaeuser($dataArr) {
         $stations = [];
@@ -2341,6 +2435,24 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
         }
         return false;
     }
+    public function convertToGermanWeekdays($array): array {
+        // Mapping of English to German weekday abbreviations
+        $dayMap = [
+            'MO' => 'MO', // Monday -> Montag
+            'TU' => 'DI', // Tuesday -> Dienstag
+            'WE' => 'MI', // Wednesday -> Mittwoch
+            'TH' => 'DO', // Thursday -> Donnerstag
+            'FR' => 'FR', // Friday -> Freitag
+            'SA' => 'SA', // Saturday -> Samstag
+            'SU' => 'SO'  // Sunday -> Sonntag
+        ];
+        $narr=[]; 
+        foreach($array as $days){
+            array_push($narr,$dayMap[$days]);
+        }  
+        return $narr;
+    }
+
     public function _getRRuleEvents($qtype=null)//Done
     {     
         $Exceptions=$this->getallExceptions($qtype); 
@@ -2422,18 +2534,21 @@ FORMAT(Datum, 'dd.MM.yyyy') = '".$this->requestDate."'  and Datum is not Null ";
                             "bymontharray"=> $row['bymonth']!=NULL?(count(explode(',',$row['bymonth']))>0?array_map('intval',explode(',',$row['bymonth'])):[intval($row['bymonth'])]):NULL,
                             "bymonthdayarray"=> $row['bymonthday']!=NULL?(count(explode(',',$row['bymonthday']))>0?array_map('intval',explode(',',$row['bymonthday'])):[intval($row['bymonthday'])]):NULL,
                             "jahrmuster"=>(($row['bymonthday']!=NULL&&$row['bymonth']!=NULL)?'DATUM':(($row['byday']!=NULL&&$row['bymonth']!=NULL)?'WOCHENTAGMONAT':(($row['byyearday']!=NULL)?'YEARDAY':'WEEKNUMBER'))),
+                            "monatmuster"=>(($row['bymonthday']!=NULL&&$row['rfrequency']=='MONTHLY')?'DAY':(($row['byday']!=NULL&&$row['rfrequency']=='MONTHLY')?'WEEKDAY':NULL)),
                             "bydayarray"=>
-                            ($row['byday']!=NULL&&preg_match('/[a-zA-Z]/', $row['byday']) === 1)?
+                            ($row['byday']!=NULL&&preg_match_all('/^-?\d+(MO|TU|WE|TH|FR|SA|SU)(,-?\d+(MO|TU|WE|TH|FR|SA|SU))*$/', $row['byday']) === 1)?
                             (
                                 count(explode(',',$row['byday']))>0?
                                 $this->addColonToOffsets(explode(',',$row['byday'])):
                                 $this->addColonToOffsets([$row['byday']])
                             ):(
-                                count(explode(',',$row['byday']))>0?
-                                explode(',',$row['byday']):
-                                [$row['byday']]
+                                $row['byday']!=NULL&&count(explode(',',$row['byday']))>0?
+                                $this->convertToGermanWeekdays(explode(',',$row['byday'])):
+                                ($row['byday']!=NULL?$this->convertToGermanWeekdays([$row['byday']]):NULL)
                             ),
                             "byyeardayarray"=>$row['byyearday']!=NULL?(count(explode(',',$row['byyearday']))>0?(array_map('intval',explode(',',$row['byyearday']))):[intval($row['byyearday'])]):NULL,
+                            "byweeknoarray"=>$row['byweekno']!=NULL?(count(explode(',',$row['byweekno']))>0?(array_map('intval',explode(',',$row['byweekno']))):[intval($row['byweekno'])]):NULL, 
+                            "rrstring"=>"DTSTART;TZID=Europe/Berlin:".$DTStart."\nRRULE:".$row['rrulestring'].$festesende."",
                             "kategorieid"=>'serien',
                             "kategorie"=>(string)$row['kategorie']!=NULL?intval($row['kategorie']):0,
                             "katBezeichnung"=>'rrule', 
