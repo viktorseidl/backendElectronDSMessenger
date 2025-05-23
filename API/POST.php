@@ -79,9 +79,9 @@ switch ($path) {
         $result = $Notes->addNewNote($anwender, $ID);
         echo json_encode($result ?: false);
         break;
-    case 'addNewStandardEventToKalendar': 
+    case 'addNewStandardEventToKalendar':  
         require(__DIR__ . '/../Classes/Calendar.php'); 
-        $data = json_decode($data);
+        $data = json_decode($data); 
         $Anwender = sanitizeInput($data->terminAnwender ?? ''); // Username  like 'HAE' 
         $AnwenderTyp = sanitizeInput($data->terminAnwenderTyp ?? ''); //P - V
         $terminBetreff = sanitizeInput($data->terminBetreff ?? ''); //Betreff des Termins 

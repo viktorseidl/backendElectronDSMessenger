@@ -114,9 +114,42 @@ switch ($path) {
         $data = base64_decode(sanitizeInput($_GET['a'] ?? ''));
         $user = explode(':', $data)[0];
         $dayDate = explode(':', $data)[1]; 
-        $dbtype = (base64_decode(sanitizeInput($_GET['t'] ?? ''))) == "P" ? 'pflege' : 'verwaltung';
+        $dbtype = sanitizeInput(base64_decode($_GET['t'] ?? ''));
         $Calendar = new Calendar($dbtype, $user, $dayDate,1);
         $result = $Calendar->getAllEvents('day');
+        echo json_encode($result);
+        http_response_code(200);
+        break;
+    case 'getWeekEvents':
+        require(__DIR__ . '/../Classes/Calendar.php');
+        $data = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $user = explode(':', $data)[0];
+        $dayDate = explode(':', $data)[1]; 
+        $dbtype = sanitizeInput(base64_decode($_GET['t'] ?? ''));
+        $Calendar = new Calendar($dbtype, $user, $dayDate,1);
+        $result = $Calendar->getAllEvents('week');
+        echo json_encode($result);
+        http_response_code(200);
+        break;
+    case 'getMonthEvents':
+        require(__DIR__ . '/../Classes/Calendar.php');
+        $data = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $user = explode(':', $data)[0];
+        $dayDate = explode(':', $data)[1]; 
+        $dbtype = sanitizeInput(base64_decode($_GET['t'] ?? ''));
+        $Calendar = new Calendar($dbtype, $user, $dayDate,1);
+        $result = $Calendar->getAllEvents('month');
+        echo json_encode($result);
+        http_response_code(200);
+        break;
+    case 'getYearEvents':
+        require(__DIR__ . '/../Classes/Calendar.php');
+        $data = base64_decode(sanitizeInput($_GET['a'] ?? ''));
+        $user = explode(':', $data)[0];
+        $dayDate = explode(':', $data)[1]; 
+        $dbtype = sanitizeInput(base64_decode($_GET['t'] ?? ''));
+        $Calendar = new Calendar($dbtype, $user, $dayDate,1);
+        $result = $Calendar->getAllEvents('year');
         echo json_encode($result);
         http_response_code(200);
         break;

@@ -1,7 +1,27 @@
 <?php
 function sanitizeInput($input)
 {
+    if(is_array($input)){
+        $n=[];
+        foreach($input as $value){
+            if(is_array($value)){
+                $bn=[];
+                foreach($value as $bivalue){
+                    if(is_array($bivalue)){
+                        array_push($bn,$bivalue);
+                    }else{
+                        array_push($bn,htmlspecialchars(strip_tags(trim($bivalue)))); 
+                    }
+                }
+                array_push($n,$bn);
+            }else{
+                array_push($n,htmlspecialchars(strip_tags(trim($value))));  
+            }
+        }
+        return $n;
+    }else{
     return htmlspecialchars(strip_tags(trim($input)));
+    }
 }
 switch ($path) {
     case 'movetoInbox':
@@ -71,6 +91,65 @@ switch ($path) {
             $standardTerminEndeDatumZeit
         ); 
         echo json_encode($result ?: false);
+        break;
+    case 'updateRRuleEventInKalendar':
+        require(__DIR__ . '/../Classes/Calendar.php'); 
+        $data = json_decode($data);
+        $TerminID=sanitizeInput((string)$data->terminObjectID ?? '');
+        $Anwender = sanitizeInput($data->terminAnwender ?? ''); // Username  like 'HAE' 
+        $AnwenderTyp = sanitizeInput($data->terminAnwenderTyp ?? ''); //P - V
+        $terminBetreff = sanitizeInput($data->terminBetreff ?? ''); //Betreff des Termins 
+        $terminKategorie = sanitizeInput($data->terminKategorie ?? ''); //Kategorie des Termins = Name der Kategorie ->  Geburtstag der Bewohner
+        $terminSichtbarkeit = sanitizeInput($data->terminSichtbarkeit ?? ''); //Sichtbarkeit ["ME"=Privat,"PUB"=Öffentlich (Pflege+Verwaltung),"P"=Pflege,"V"=Verwaltung] 
+        $terminFarbe = sanitizeInput($data->rruleTerminColor ?? ''); //Sichtbarkeit ["ME"=Privat,"PUB"=Öffentlich (Pflege+Verwaltung),"P"=Pflege,"V"=Verwaltung] 
+        $terminWohnbereich = sanitizeInput($data->terminWohnbereich ?? ''); //Name des Wohnbereich
+        $terminBemerkung = sanitizeInput($data->terminBemerkung ?? ''); //Bemerkung EmptyString/String
+        $terminErinnerungSwitch = sanitizeInput($data->terminErinnerungSwitch ?? ''); //Erinnerung Switch true/false
+        $terminErinnerungDatum = sanitizeInput($data->terminErinnerungDatum ?? ''); //Erinnerung Datum null/ true/2025-05-22T22:00:00.000Z
+        $RRuleFrequenz = sanitizeInput($data->rruleTerminFrequenz ?? ''); //Frequenz DAILY, MONTHLY, WEEKLY & YEARLY
+        $rruleTerminDauer = sanitizeInput($data->rruleTerminDauer ?? ''); //Dauer in Minuten 
+        $rruleTerminStartDatumZeit = sanitizeInput($data->rruleTerminStartDatumZeit ?? ''); //StartDatum/zeit: 2025-05-22T22:00:00.000Z
+        $rruleTerminEndeType = sanitizeInput($data->rruleTerminEndeType ?? ''); //Ende-Typ: NODATE, DATE oder REPEAT 
+        $rruleTerminEndeTypeDatum = sanitizeInput($data->rruleTerminEndeTypeDatum ?? ''); //Datum Ende wenn DATE: 2025-05-22T22:00:00.000Z
+        $rruleTerminEndeTypeWiederholungen = sanitizeInput($data->rruleTerminEndeTypeWiederholungen ?? ''); //Datum Ende in wiederholungen wenn REPEAT
+        $rruleTerminJahresMuster = sanitizeInput($data->rruleTerminJahresMuster ?? ''); // ON YEARLY= DATUM, WOCHENTAGMONAT,YEARDAY, WEEKNUMBER
+        $rruleTerminMonatMuster = sanitizeInput($data->rruleTerminMonatMuster ?? ''); // ON MONTHLY= DAY, WEEKDAY
+        $rruleTerminWiederholungsMuster = sanitizeInput($data->rruleTerminWiederholungsMuster ?? ''); // wiederholungen 1 alle tage,monate,jahre,...
+        $rruleTerminJaehrlichJahresMusterDatum_MonateArray = sanitizeInput($data->rruleTerminJaehrlichJahresMusterDatum_MonateArray ?? ''); // Monate array [1,2,12]
+        $rruleTerminJaehrlichJahresMusterDatum_TageArray = sanitizeInput($data->rruleTerminJaehrlichJahresMusterDatum_TageArray ?? ''); // Monate array [1,2,12] oder [1:MO,2:DI,...]
+        $rruleTerminJaehrlichJahresMusterJahrestag_TageArray = sanitizeInput($data->rruleTerminJaehrlichJahresMusterJahrestag_TageArray ?? ''); // Jahrestage array [1,2,365] 
+        $rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray = sanitizeInput($data->rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray ?? ''); // WochenTage array [ "DI", "MI", "DO" ]
+        $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray = sanitizeInput($data->rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray ?? ''); // Wochennummer array [ 1, 2, 52 ]
+        
+        $Calendar = new Calendar("V", $Anwender, "",1);
+         $result=$Calendar->updateNewRRuleEvent(
+            $TerminID,
+            $Anwender,
+            $AnwenderTyp,
+            $terminBetreff,
+            $terminKategorie,
+            $terminSichtbarkeit,
+            $terminWohnbereich,
+            $terminBemerkung,
+            $terminErinnerungSwitch,
+            $terminErinnerungDatum,
+            $RRuleFrequenz,
+            $rruleTerminDauer,
+            $rruleTerminStartDatumZeit,
+            $rruleTerminEndeType,
+            $rruleTerminEndeTypeDatum,
+            $rruleTerminEndeTypeWiederholungen,
+            $rruleTerminJahresMuster,
+            $rruleTerminMonatMuster,
+            $rruleTerminWiederholungsMuster,
+            $rruleTerminJaehrlichJahresMusterDatum_MonateArray,
+            $rruleTerminJaehrlichJahresMusterDatum_TageArray,
+            $rruleTerminJaehrlichJahresMusterJahrestag_TageArray,
+            $rruleTerminJaehrlichJahresMusterJahrestag_WochenTageArray,
+            $rruleTerminJaehrlichJahresMusterJahrestag_WochennummerArray,
+            $terminFarbe
+        ); 
+        echo json_encode($result ?: false); 
         break;
     case 'MarkReadMessageOnID':
         require(__DIR__ . '/../Classes/Messages.php');
