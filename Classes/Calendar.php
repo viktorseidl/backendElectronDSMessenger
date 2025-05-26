@@ -249,7 +249,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[KontrakturDatum] Is Not Null and     
@@ -286,7 +286,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[KontrakturDatum] Is Not Null  AND  (CAST(PB.[KontrakturDatum] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[KontrakturDatum] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -322,7 +322,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[KontrakturDatum] Is Not Null  AND  (CAST(PB.[KontrakturDatum] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[KontrakturDatum] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -358,7 +358,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[KontrakturDatum] Is Not Null  AND  (CAST(PB.[KontrakturDatum] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[KontrakturDatum] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -442,7 +442,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON B.BewohnerNr = PB.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer 
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             LEFT JOIN [".$this->dbnameP."].[dbo].BewohnerHilfsmittel H ON PB.BewohnerNr = H.BewohnerNr 
             CROSS JOIN Kalender K
             WHERE 
@@ -483,7 +483,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON B.BewohnerNr = PB.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer 
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             LEFT JOIN [".$this->dbnameP."].[dbo].BewohnerHilfsmittel H ON PB.BewohnerNr = H.BewohnerNr 
             CROSS JOIN Kalender K
             WHERE 
@@ -523,7 +523,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON B.BewohnerNr = PB.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer 
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             LEFT JOIN [".$this->dbnameP."].[dbo].BewohnerHilfsmittel H ON PB.BewohnerNr = H.BewohnerNr 
             CROSS JOIN Kalender K
             WHERE 
@@ -563,7 +563,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON B.BewohnerNr = PB.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer 
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             LEFT JOIN [".$this->dbnameP."].[dbo].BewohnerHilfsmittel H ON PB.BewohnerNr = H.BewohnerNr 
             CROSS JOIN Kalender K
             WHERE 
@@ -650,7 +650,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[DekubitusProphylaxeDatum] Is Not Null and     
@@ -688,7 +688,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[DekubitusProphylaxeDatum] Is Not Null AND  (CAST(PB.[DekubitusProphylaxeDatum] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[DekubitusProphylaxeDatum] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -725,7 +725,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[DekubitusProphylaxeDatum] Is Not Null AND  (CAST(PB.[DekubitusProphylaxeDatum] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[DekubitusProphylaxeDatum] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -762,7 +762,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[DekubitusProphylaxeDatum] Is Not Null AND  (CAST(PB.[DekubitusProphylaxeDatum] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[DekubitusProphylaxeDatum] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -846,7 +846,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[BradenDatum] Is Not Null and     
@@ -884,7 +884,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[BradenDatum] Is Not Null  AND  (CAST(PB.[BradenDatum] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[BradenDatum] AS DATE)<=CAST('".$weekdates['end']."' AS DATE)) and  
@@ -921,7 +921,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[BradenDatum] Is Not Null  AND  (CAST(PB.[BradenDatum] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[BradenDatum] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE)) and  
@@ -958,7 +958,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[BradenDatum] Is Not Null  AND  (CAST(PB.[BradenDatum] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[BradenDatum] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE)) and  
@@ -1042,7 +1042,7 @@ class Calendar{
                     B.vorname + ' ' + B.Name AS Bewohner 
                 FROM [".$this->dbnameP."].[dbo].Bewohner PB
                 LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
                 CROSS JOIN Kalender K
                 WHERE  
                 PB.[BradenDatum] Is Not Null and     
@@ -1080,7 +1080,7 @@ class Calendar{
                     B.vorname + ' ' + B.Name AS Bewohner 
                 FROM [".$this->dbnameP."].[dbo].Bewohner PB
                 LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
                 CROSS JOIN Kalender K
                 WHERE  
                 PB.[BradenDatum] Is Not Null  AND  (CAST(PB.[BradenDatum] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[BradenDatum] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -1117,7 +1117,7 @@ class Calendar{
                     B.vorname + ' ' + B.Name AS Bewohner 
                 FROM [".$this->dbnameP."].[dbo].Bewohner PB
                 LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
                 CROSS JOIN Kalender K
                 WHERE  
                 PB.[BradenDatum] Is Not Null  AND  (CAST(PB.[BradenDatum] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[BradenDatum] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -1154,7 +1154,7 @@ class Calendar{
                     B.vorname + ' ' + B.Name AS Bewohner 
                 FROM [".$this->dbnameP."].[dbo].Bewohner PB
                 LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+                LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
                 CROSS JOIN Kalender K
                 WHERE  
                 PB.[BradenDatum] Is Not Null  AND  (CAST(PB.[BradenDatum] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[BradenDatum] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -1238,7 +1238,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[EvaluierungBetreuung] Is Not Null and     
@@ -1276,7 +1276,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[EvaluierungBetreuung] Is Not Null  AND  (CAST(PB.[EvaluierungBetreuung] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[EvaluierungBetreuung] AS DATE)<=CAST('".$weekdates['end']."' AS DATE)) and  
@@ -1313,7 +1313,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[EvaluierungBetreuung] Is Not Null  AND  (CAST(PB.[EvaluierungBetreuung] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[EvaluierungBetreuung] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE)) and  
@@ -1350,7 +1350,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[EvaluierungBetreuung] Is Not Null  AND  (CAST(PB.[EvaluierungBetreuung] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[EvaluierungBetreuung] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE)) and  
@@ -1434,7 +1434,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundvermessung] Is Not Null and    
@@ -1472,7 +1472,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundvermessung] Is Not Null  AND  (CAST(PB.[Wundvermessung] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[Wundvermessung] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -1509,7 +1509,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundvermessung] Is Not Null  AND  (CAST(PB.[Wundvermessung] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[Wundvermessung] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -1546,7 +1546,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundvermessung] Is Not Null  AND  (CAST(PB.[Wundvermessung] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[Wundvermessung] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -1630,7 +1630,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundauswertung] Is Not Null and     
@@ -1668,7 +1668,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundauswertung] Is Not Null  AND  (CAST(PB.[Wundauswertung] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[Wundauswertung] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -1705,7 +1705,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundauswertung] Is Not Null  AND  (CAST(PB.[Wundauswertung] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[Wundauswertung] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -1742,7 +1742,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Wundauswertung] Is Not Null  AND  (CAST(PB.[Wundauswertung] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[Wundauswertung] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -1826,7 +1826,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Evaluierung] Is Not Null and     
@@ -1864,7 +1864,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Evaluierung] Is Not Null  AND  (CAST(PB.[Nächste Evaluierung]  AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[Nächste Evaluierung]  AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -1901,7 +1901,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Evaluierung] Is Not Null  AND  (CAST(PB.[Nächste Evaluierung]  AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[Nächste Evaluierung]  AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -1938,7 +1938,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Evaluierung] Is Not Null  AND  (CAST(PB.[Nächste Evaluierung]  AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[Nächste Evaluierung]  AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -2022,7 +2022,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Pflegevisite] Is Not Null and     
@@ -2060,7 +2060,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Pflegevisite] Is Not Null  AND  (CAST(PB.[Nächste Pflegevisite] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.[Nächste Pflegevisite] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -2097,7 +2097,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Pflegevisite] Is Not Null  AND  (CAST(PB.[Nächste Pflegevisite] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.[Nächste Pflegevisite] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -2134,7 +2134,7 @@ class Calendar{
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameP."].[dbo].Bewohner PB
             LEFT JOIN [".$this->dbnameV."].[dbo].Bewohner B ON PB.BewohnerNr = B.BewohnerNr 
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             PB.[Nächste Pflegevisite] Is Not Null  AND  (CAST(PB.[Nächste Pflegevisite] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.[Nächste Pflegevisite] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -2217,7 +2217,7 @@ class Calendar{
             END AS Ende,
             B.vorname + ' ' + B.Name AS Bewohner 
         FROM [".$this->dbnameV."].[dbo].Bewohner B
-        LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+        LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
         CROSS JOIN Kalender K
         WHERE  
         B.[Schwerbehindert gültig bis] Is Not Null and     
@@ -2255,7 +2255,7 @@ class Calendar{
                 END AS Ende,
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameV."].[dbo].Bewohner B
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             B.[Schwerbehindert gültig bis] Is Not Null AND  (CAST(B.[Schwerbehindert gültig bis] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(B.[Schwerbehindert gültig bis] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and  
@@ -2292,7 +2292,7 @@ class Calendar{
                 END AS Ende,
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameV."].[dbo].Bewohner B
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             B.[Schwerbehindert gültig bis] Is Not Null AND  (CAST(B.[Schwerbehindert gültig bis] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(B.[Schwerbehindert gültig bis] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and  
@@ -2329,7 +2329,7 @@ class Calendar{
                 END AS Ende,
                 B.vorname + ' ' + B.Name AS Bewohner 
             FROM [".$this->dbnameV."].[dbo].Bewohner B
-            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+            LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
             CROSS JOIN Kalender K
             WHERE  
             B.[Schwerbehindert gültig bis] Is Not Null AND  (CAST(B.[Schwerbehindert gültig bis] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(B.[Schwerbehindert gültig bis] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and  
@@ -2413,7 +2413,7 @@ SELECT DISTINCT
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Tabellenwohngeld genehmigt] Is Not Null and     
@@ -2451,7 +2451,7 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC";
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Tabellenwohngeld genehmigt] Is Not Null AND  (CAST(B.[Tabellenwohngeld genehmigt] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(B.[Tabellenwohngeld genehmigt] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  and 
@@ -2488,7 +2488,7 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC ";
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Tabellenwohngeld genehmigt] Is Not Null AND  (CAST(B.[Tabellenwohngeld genehmigt] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(B.[Tabellenwohngeld genehmigt] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  and 
@@ -2525,7 +2525,7 @@ B.BewohnerNr < 70000 ORDER BY Dates ASC ";
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Tabellenwohngeld genehmigt] Is Not Null AND  (CAST(B.[Tabellenwohngeld genehmigt] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(B.[Tabellenwohngeld genehmigt] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  and 
@@ -2612,7 +2612,7 @@ SELECT DISTINCT
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Pflegewohngeld genehmigt] Is Not Null and     
@@ -2651,7 +2651,7 @@ SELECT DISTINCT
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Pflegewohngeld genehmigt] Is Not Null AND  (CAST(B.[Pflegewohngeld genehmigt] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(B.[Pflegewohngeld genehmigt] AS DATE)<=CAST('".$weekdates['end']."' AS DATE)) and 
@@ -2689,7 +2689,7 @@ SELECT DISTINCT
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Pflegewohngeld genehmigt] Is Not Null AND  (CAST(B.[Pflegewohngeld genehmigt] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(B.[Pflegewohngeld genehmigt] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE)) and 
@@ -2727,7 +2727,7 @@ SELECT DISTINCT
     END AS Ende,
     B.vorname + ' ' + B.Name AS Bewohner 
 FROM [".$this->dbnameV."].[dbo].Bewohner B
-LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON B.Zimmer = Z.ZimmerNummer
+LEFT JOIN [".$this->dbnameV."].[dbo].Zimmer Z ON CAST(B.Zimmer AS nvarchar) = CAST(Z.ZimmerNummer AS nvarchar)
 CROSS JOIN Kalender K
 WHERE  
 B.[Pflegewohngeld genehmigt] Is Not Null AND  (CAST(B.[Pflegewohngeld genehmigt] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(B.[Pflegewohngeld genehmigt] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE)) and 
@@ -4306,6 +4306,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
             if (trim($item['kname']) == "Nortonskala") {  
                 $BewohnerNortonskala=$this->_getNortonskala($qtype);   
             }
+            
             if (trim($item['kname']) == "Dekubitusprophylaxemaßnahmen") {  
                 $BewohnerDekubitusprophylaxe=$this->_getDekubitusprophylaxe($qtype);     
             }
@@ -4320,7 +4321,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
             } 
         }
         //GET ALL SERIEN TERMINE
-        $RRulesMy=$this->_getRRuleEvents($qtype); 
+        //$RRulesMy=$this->_getRRuleEvents($qtype); 
              
         $queryCondition="";
         if($qtype=='day'){
@@ -4661,11 +4662,17 @@ public function getMonthDatesOnRequest(string $dateStr): array {
         }
     }
     public function getMinutesDifference($startTime, $endTime) {
+        
         $start = DateTime::createFromFormat('H:i', $startTime);
         $end = DateTime::createFromFormat('H:i', $endTime);
-    
-        $diff = $start->diff($end);
+        if ($start instanceof DateTime&& $end instanceof DateTime) {
+    // $start is a valid DateTime object
+
+        $diff = $start->diff($end)?$start->diff($end):0;
         return $diff->h * 60 + $diff->i;
+        }else{
+            return 40;
+        }
     }
     public function deleteEventStampOnViewDaily($id,$type) { 
         if($type=='standard'){
