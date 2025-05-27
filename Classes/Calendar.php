@@ -3870,16 +3870,16 @@ public function getMonthDatesOnRequest(string $dateStr): array {
          */
         $queryCondition="";
         if($qtype=='day'){
-            $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$this->requestDate."'  AND (R.until is null or R.until>='".$this->requestDate."')  AND ((R.anwender='HAE') or (R.anwender!='HAE' AND systempart='PUB'))  AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
+            $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$this->requestDate."'  AND (R.until is null or R.until>='".$this->requestDate."')  AND ((R.anwender='".strtoupper($this->user)."') or (R.anwender!='".strtoupper($this->user)."' AND (systempart='PUB' OR systempart='".$this->dbtype."')))  AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
         }else if($qtype=='week'){
             $weekdates=$this->getQtypeStartAndEnd($this->requestDate);
-             $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$weekdates['end']."'  AND (R.until is null or CAST(R.until AS DATE)>='".$weekdates['end']."')  AND ((R.anwender='HAE') or (R.anwender!='HAE' AND systempart='PUB'))  AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
+             $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$weekdates['end']."'  AND (R.until is null or CAST(R.until AS DATE)>='".$weekdates['end']."')  AND ((R.anwender='".strtoupper($this->user)."') or (R.anwender!='".strtoupper($this->user)."' AND (systempart='PUB' OR systempart='".$this->dbtype."')))   AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
         }else if($qtype=='month'){
             $monthdates=$this->getQtypeStartAndEnd($this->requestDate); 
-             $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$monthdates['endmonth']."'  AND (R.until is null or CAST(R.until AS DATE)>='".$monthdates['endmonth']."')  AND ((R.anwender='HAE') or (R.anwender!='HAE' AND systempart='PUB'))  AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
+             $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$monthdates['endmonth']."'  AND (R.until is null or CAST(R.until AS DATE)>='".$monthdates['endmonth']."')  AND ((R.anwender='".strtoupper($this->user)."') or (R.anwender!='".strtoupper($this->user)."' AND (systempart='PUB' OR systempart='".$this->dbtype."')))   AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
         }else if($qtype=='year'){
             $yeardates=$this->getQtypeStartAndEnd($this->requestDate);
-            $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$yeardates['endyear']."'  AND (R.until is null or CAST(R.until AS DATE)>='".$yeardates['endyear']."')  AND ((R.anwender='HAE') or (R.anwender!='HAE' AND systempart='PUB'))  AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
+            $queryCondition = "SELECT R.*, (CASE WHEN kategorie is not null THEN (SELECT TOP(1) K.Kategorie FROM [".$this->dbnameV."].dbo.KalenderKategorien K WHERE CAST(R.kategorie AS INT)=K.ID) ELSE NULL END) as kname FROM  [".$this->dbnameV."].dbo.rrevents R WHERE CAST(R.starttime AS DATE)<='".$yeardates['endyear']."'  AND (R.until is null or CAST(R.until AS DATE)>='".$yeardates['endyear']."')  AND ((R.anwender='".strtoupper($this->user)."') or (R.anwender!='".strtoupper($this->user)."' AND (systempart='PUB' OR systempart='".$this->dbtype."')))  AND ([location] in(".$haeuserNames.") or [location] is NULL)  AND ([floor] in(".$stationenNames.") or [floor] is NULL) ORDER BY  CAST(R.byhour AS INT) DESC, R.duration DESC  ";
         }
         $query =$queryCondition; 
         $result = $this->conn->query($query, []);  
@@ -4148,7 +4148,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                             "isEditable"=>$row['systempart']=='ME'?true:false ,
                             "isNoteAttached"=>$row['isnote']==null?null:$row['isnote'] ,
                             "isPublic"=>$row['systempart']=='ME'?true:false ,
-                            "isprivate"=>$row['systempart']=='ME'?true:false ,
+                            "isprivate"=>($row['systempart']=='ME'&&(strtoupper($row['anwender'])==strtoupper($this->user)))?true:false ,
                             "katBackColor"=>$row['hexcolor'] ,
                             "realtimeend"=>$timings['end'] ,
                             "realtimeendDate"=>$timings['endobj']->format('d.m.Y'), 
@@ -4321,7 +4321,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
             } 
         }
         //GET ALL SERIEN TERMINE
-        //$RRulesMy=$this->_getRRuleEvents($qtype); 
+        $RRulesMy=$this->_getRRuleEvents($qtype); 
              
         $queryCondition="";
         if($qtype=='day'){
@@ -4376,8 +4376,10 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                 WHEN TRY_CAST(KK.ForeColor AS INT) IS NULL THEN NULL
                 ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(KK.ForeColor AS INT), 'X')), 6) 
             END AS katForeColor FROM [".$this->dbnameV."].dbo.Kalender K LEFT JOIN [".$this->dbnameV."].dbo.KalenderKategorien KK ON K.Kategorie=KK.ID 
-            WHERE (K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."')  AND  FORMAT(K.[Beginn], 'dd.MM.yyyy')='".$this->requestDate."' 
+            WHERE ((K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."') OR (K.[User]='' AND (K.[part]='".$this->dbtype."' OR  K.[part] is null)))  AND 
+            (CAST('".$this->requestDate."' AS DATE) BETWEEN CAST(K.[Beginn] AS DATE) AND CAST(K.[Ende] AS DATE))
             ORDER BY K.Beginn ASC, K.Beginnzeit ASC"; 
+            // (FORMAT(K.[Beginn], 'dd.MM.yyyy')='".$this->requestDate."' OR (CAST(K.[Ende] AS DATE)<=CAST('".$this->requestDate."' AS DATE))) 
         }else if($qtype=='week'){
             $weekdates=$this->getQtypeStartAndEnd($this->requestDate);
             $queryCondition="SELECT TOP(5000) K.ID AS id,COALESCE( 
@@ -4431,8 +4433,8 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                 WHEN TRY_CAST(KK.ForeColor AS INT) IS NULL THEN NULL
                 ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(KK.ForeColor AS INT), 'X')), 6) 
             END AS katForeColor FROM [".$this->dbnameV."].dbo.Kalender K LEFT JOIN [".$this->dbnameV."].dbo.KalenderKategorien KK ON K.Kategorie=KK.ID 
-            WHERE (K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."')   AND  (CAST(K.[Beginn] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<=CAST('".$weekdates['end']."' AS DATE))  
-            ORDER BY K.Beginn ASC, K.Beginnzeit ASC";  
+            WHERE ((K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."') OR (K.[User]='' AND (K.[part]='".$this->dbtype."' OR  K.[part] is null)))  AND  (CAST(K.[Beginn] AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<=CAST('".$weekdates['end']."' AS DATE)) OR (CAST(K.[Ende] AS DATE) BETWEEN CAST('".$weekdates['start']."' AS DATE) AND CAST('".$weekdates['end']."' AS DATE)) OR (CAST(K.[Ende] AS DATE)>CAST('".$weekdates['end']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<CAST('".$weekdates['start']."' AS DATE) )
+            ORDER BY K.Beginn ASC, K.Beginnzeit ASC ";  
         }else if($qtype=='month'){
             $monthdates=$this->getQtypeStartAndEnd($this->requestDate);
             $queryCondition="SELECT TOP(5000) K.ID AS id,COALESCE( 
@@ -4486,8 +4488,9 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                 WHEN TRY_CAST(KK.ForeColor AS INT) IS NULL THEN NULL
                 ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(KK.ForeColor AS INT), 'X')), 6) 
             END AS katForeColor FROM [".$this->dbnameV."].dbo.Kalender K LEFT JOIN [".$this->dbnameV."].dbo.KalenderKategorien KK ON K.Kategorie=KK.ID 
-            WHERE (K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."')   AND  (CAST(K.[Beginn] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))  
-            ORDER BY K.Beginn ASC, K.Beginnzeit ASC";  
+            WHERE ((K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."') OR (K.[User]='' AND (K.[part]='".$this->dbtype."' OR  K.[part] is null)))  AND 
+             (CAST(K.[Beginn] AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE)) OR (CAST(K.[Ende] AS DATE) BETWEEN CAST('".$monthdates['startmonth']."' AS DATE) AND CAST('".$monthdates['endmonth']."' AS DATE)) OR (CAST(K.[Ende] AS DATE)>CAST('".$monthdates['endmonth']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<CAST('".$monthdates['startmonth']."' AS DATE) )
+            ORDER BY K.Beginn ASC, K.Beginnzeit ASC ";  
         }else if($qtype=='year'){
              $yeardates=$this->getQtypeStartAndEnd($this->requestDate);
              $queryCondition="SELECT TOP(5000) K.ID AS id,COALESCE( 
@@ -4541,7 +4544,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                 WHEN TRY_CAST(KK.ForeColor AS INT) IS NULL THEN NULL
                 ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(KK.ForeColor AS INT), 'X')), 6) 
             END AS katForeColor FROM [".$this->dbnameV."].dbo.Kalender K LEFT JOIN [".$this->dbnameV."].dbo.KalenderKategorien KK ON K.Kategorie=KK.ID 
-            WHERE (K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."')   AND  (CAST(K.[Beginn] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))  
+            WHERE ((K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."') OR (K.[User]='' AND (K.[part]='".$this->dbtype."' OR  K.[part] is null)))  AND  (CAST(K.[Beginn] AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(K.[Beginn] AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE)) 
             ORDER BY K.Beginn ASC, K.Beginnzeit ASC";   
     }             
         $query=$queryCondition;  
