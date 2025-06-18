@@ -23,6 +23,220 @@ class Calendar{
             $this->dbnameP = $config['databasePflege'];
         }
     }
+    public function _getKatheterwechsel($qtype=null)//Done
+    { 
+        $dateObj = strtotime($this->requestDate);
+        $monat=date('Y-m-d', intval($dateObj)); 
+       $queryCondition="";
+        if($qtype=='day'){
+            $queryCondition="WITH Kalender AS (SELECT ID AS kid,
+                    CASE 
+                    WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+                    ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+                    END AS katBackColor
+                    FROM [MedicareRak].[dbo].KalenderKategorien 
+                    WHERE Kategorie = 'Katheterwechsel'
+                    ) SELECT DISTINCT 
+                    H.id AS id,
+                    Z.Station AS wohnbereich,
+                    Z.Haus as haus,
+                    K.kid, 
+                    B.BewohnerNr as bewohnerid,
+                    K.katBackColor,
+                    B.vorname + ' ' + B.Name as Betreff,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND CAST(BP.Katheterdatum AS DATE)>=CAST('".$monat."' AS DATE) 
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Dates,
+                    '#000000' AS VordergrundFarbe,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND CAST(BP.Katheterdatum AS DATE)>=CAST('".$monat."'  AS DATE) 
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Ende,
+                    H.Haus AS Bewohner 
+                    FROM [MedicarePflegeRak].[dbo].Bewohner  BP
+                    LEFT JOIN [MedicareRak].[dbo].Bewohner B ON B.BewohnerNr = BP.BewohnerNr
+                    LEFT JOIN [MedicareRak].[dbo].Zimmer Z ON Z.ID = B.Zimmer
+                    LEFT JOIN [MedicareRak].[dbo].[Häuser] H ON H.ID = Z.Haus   
+                    CROSS JOIN Kalender K
+                    WHERE    
+                    B.Abgangsdatum is null AND 
+                    B.BewohnerNr < 70000 AND 
+                    ( Select top 1 PB.Katheterdatum from   
+                    MedicarePflegeRak.dbo.Bewohner PB  where PB.BewohnerNr = B.BewohnerNr 
+                    and PB.Katheterdatum is not null and 
+                    PB.Katheterdatum >= CAST('".$monat."'  AS DATE) ) IS NOT NULL  
+                    AND CONVERT(DATE, BP.Katheterdatum, 104)=CAST('".$monat."'  AS DATE) 
+                    ORDER BY Dates ASC";
+        }else if($qtype=='week'){
+            $weekdates=$this->getQtypeStartAndEnd($this->requestDate);
+            $queryCondition="WITH Kalender AS (SELECT ID AS kid,
+                    CASE 
+                    WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+                    ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+                    END AS katBackColor
+                    FROM [MedicareRak].[dbo].KalenderKategorien 
+                    WHERE Kategorie = 'Katheterwechsel'
+                    ) SELECT DISTINCT 
+                    H.id AS id,
+                    Z.Station AS wohnbereich,
+                    Z.Haus as haus,
+                    K.kid, 
+                    B.BewohnerNr as bewohnerid,
+                    K.katBackColor,
+                    B.vorname + ' ' + B.Name as Betreff,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND (CAST(BP.Katheterdatum AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(BP.Katheterdatum AS DATE)<=CAST('".$weekdates['end']."' AS DATE))   
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Dates,
+                    '#000000' AS VordergrundFarbe,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND (CAST(BP.Katheterdatum AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(BP.Katheterdatum AS DATE)<=CAST('".$weekdates['end']."' AS DATE))
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Ende,
+                    H.Haus AS Bewohner 
+                    FROM [MedicarePflegeRak].[dbo].Bewohner  BP
+                    LEFT JOIN [MedicareRak].[dbo].Bewohner B ON B.BewohnerNr = BP.BewohnerNr
+                    LEFT JOIN [MedicareRak].[dbo].Zimmer Z ON Z.ID = B.Zimmer
+                    LEFT JOIN [MedicareRak].[dbo].[Häuser] H ON H.ID = Z.Haus   
+                    CROSS JOIN Kalender K
+                    WHERE    
+                    B.Abgangsdatum is null AND 
+                    B.BewohnerNr < 70000 AND
+                    ( Select top 1 PB.Katheterdatum from   
+                    MedicarePflegeRak.dbo.Bewohner PB  where PB.BewohnerNr = B.BewohnerNr 
+                    and PB.Katheterdatum is not null and 
+                    (CAST(PB.Katheterdatum AS DATE)>=CAST('".$weekdates['start']."' AS DATE) AND CAST(PB.Katheterdatum AS DATE)<=CAST('".$weekdates['end']."' AS DATE)) ) IS NOT NULL  
+                    ORDER BY Dates ASC"; 
+        }else if($qtype=='month'){
+            $monthdates=$this->getQtypeStartAndEnd($this->requestDate);
+            $queryCondition="WITH Kalender AS (SELECT ID AS kid,
+                    CASE 
+                    WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+                    ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+                    END AS katBackColor
+                    FROM [MedicareRak].[dbo].KalenderKategorien 
+                    WHERE Kategorie = 'Katheterwechsel'
+                    ) SELECT DISTINCT 
+                    H.id AS id,
+                    Z.Station AS wohnbereich,
+                    Z.Haus as haus,
+                    K.kid, 
+                    B.BewohnerNr as bewohnerid,
+                    K.katBackColor,
+                    B.vorname + ' ' + B.Name as Betreff,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND (CAST(BP.Katheterdatum AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(BP.Katheterdatum AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))   
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Dates,
+                    '#000000' AS VordergrundFarbe,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND (CAST(BP.Katheterdatum AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(BP.Katheterdatum AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE))
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Ende,
+                    H.Haus AS Bewohner 
+                    FROM [MedicarePflegeRak].[dbo].Bewohner  BP
+                    LEFT JOIN [MedicareRak].[dbo].Bewohner B ON B.BewohnerNr = BP.BewohnerNr
+                    LEFT JOIN [MedicareRak].[dbo].Zimmer Z ON Z.ID = B.Zimmer
+                    LEFT JOIN [MedicareRak].[dbo].[Häuser] H ON H.ID = Z.Haus   
+                    CROSS JOIN Kalender K
+                    WHERE    
+                    B.Abgangsdatum is null AND 
+                    B.BewohnerNr < 70000 AND
+                    ( Select top 1 PB.Katheterdatum from   
+                    MedicarePflegeRak.dbo.Bewohner PB  where PB.BewohnerNr = B.BewohnerNr 
+                    and PB.Katheterdatum is not null and 
+                    (CAST(PB.Katheterdatum AS DATE)>=CAST('".$monthdates['startmonth']."' AS DATE) AND CAST(PB.Katheterdatum AS DATE)<=CAST('".$monthdates['endmonth']."' AS DATE)) ) IS NOT NULL  
+                    ORDER BY Dates ASC "; 
+        }else if($qtype=='year'){
+             $yeardates=$this->getQtypeStartAndEnd($this->requestDate);
+             $queryCondition="WITH Kalender AS (SELECT ID AS kid,
+                    CASE 
+                    WHEN TRY_CAST(BackColor AS INT) IS NULL THEN '#ff5eac' 
+                    ELSE '#' + RIGHT('000000' + CONVERT(VARCHAR(6), FORMAT(CAST(BackColor AS INT), 'X')), 6) 
+                    END AS katBackColor
+                    FROM [MedicareRak].[dbo].KalenderKategorien 
+                    WHERE Kategorie = 'Katheterwechsel'
+                    ) SELECT DISTINCT 
+                    H.id AS id,
+                    Z.Station AS wohnbereich,
+                    Z.Haus as haus,
+                    K.kid, 
+                    B.BewohnerNr as bewohnerid,
+                    K.katBackColor,
+                    B.vorname + ' ' + B.Name as Betreff,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND (CAST(BP.Katheterdatum AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(BP.Katheterdatum AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))   
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Dates,
+                    '#000000' AS VordergrundFarbe,
+                    CASE 
+                    WHEN BP.Katheterdatum IS NOT NULL AND (CAST(BP.Katheterdatum AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(BP.Katheterdatum AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE))
+                    THEN FORMAT(CONVERT(DATE, BP.Katheterdatum, 104), 'dd.MM.yyyy')  
+                    ELSE NULL 
+                    END AS Ende,
+                    H.Haus AS Bewohner 
+                    FROM [MedicarePflegeRak].[dbo].Bewohner  BP
+                    LEFT JOIN [MedicareRak].[dbo].Bewohner B ON B.BewohnerNr = BP.BewohnerNr
+                    LEFT JOIN [MedicareRak].[dbo].Zimmer Z ON Z.ID = B.Zimmer
+                    LEFT JOIN [MedicareRak].[dbo].[Häuser] H ON H.ID = Z.Haus   
+                    CROSS JOIN Kalender K
+                    WHERE    
+                    B.Abgangsdatum is null AND 
+                    B.BewohnerNr < 70000 AND
+                    ( Select top 1 PB.Katheterdatum from   
+                    MedicarePflegeRak.dbo.Bewohner PB  where PB.BewohnerNr = B.BewohnerNr 
+                    and PB.Katheterdatum is not null and 
+                    (CAST(PB.Katheterdatum AS DATE)>=CAST('".$yeardates['startyear']."' AS DATE) AND CAST(PB.Katheterdatum AS DATE)<=CAST('".$yeardates['endyear']."' AS DATE)) ) IS NOT NULL  
+                    ORDER BY Dates ASC";  
+        } 
+        $query =$queryCondition;
+        $result = $this->conn->query($query, []);
+     
+        if ($result!=false&&count($result)>0) { 
+            $narr=[];
+            foreach($result as $key=> $row){ 
+                        $row['id']='KATHET-'.$row['id'].$row['bewohnerid'].$key;
+                        $row['titel']='Katheterwechsel';
+                        $row['realtimestart']='00:00';
+                        $row['realtimeend']='23:59'; 
+                        $row['ColorHex']= '#c8f542'; 
+                        $row['katBackColor']= '#c8f542';  
+                        $row['datum']=explode('.',$row['Ende'])[2].'-'.explode('.',$row['Ende'])[1].'-'.explode('.',$row['Ende'])[0]; 
+                        $row['realtimestartDate']=$row['Ende'];
+                        $row['realtimeendDate']=$row['Ende'];
+                        $row['isNoteAttached']=NULL;
+                        $row['time']=intval(0);
+                        $row['duration']=intval(24*4);
+                        $row['ersteller']= strtoupper('XXXXXX'); 
+                        $row['isAlarm']=false;
+                        $row['isAlarmStamp']=NULL;
+                        $row['isEditable']=false;
+                        $row['eventTyp']=$row['kid'];
+                        $row['isPublic']=true;
+                        $row['isprivate']=false; 
+                        $row['VerwaltungPflege']=NULL; 
+                        $row['kategorie']=$row['kid']; 
+                        $row['katForeColor']='#000000';   
+                        $row['katBezeichnung']='Katheterwechsel';   
+                        unset($row['kid']);
+                        unset($row['Dates']);
+                        unset($row['VordergrundFarbe']); 
+                        unset($row['Ende']); 
+                        array_push($narr,$row); 
+            }
+            return $narr; 
+        }else{
+            return [];
+        } 
+    }
     public function _getErgebniserfassung($qtype=null)//Done
     { 
         $dateObj = strtotime($this->requestDate);
@@ -201,8 +415,7 @@ class Calendar{
                         $row['VerwaltungPflege']=NULL; 
                         $row['kategorie']=$row['kid']; 
                         $row['katForeColor']='#000000';   
-                        $row['katBezeichnung']='Ergebniserfassung'; 
-                        $row['fgdfgfd']=strtotime($row['Ende']); 
+                        $row['katBezeichnung']='Ergebniserfassung';   
                         unset($row['id']); 
                         unset($row['kid']);
                         unset($row['Dates']);
@@ -3423,14 +3636,16 @@ WHERE
         WHERE AbgangsDatum IS NULL AND (B.Geburtsdatum is not NULL AND CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)>='".$weekdates['start']."' AND  CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)<='".$weekdates['end']."') ORDER BY datum ASC";             
         }else if($qtype=='month'){
             $monthdates=$this->getQtypeStartAndEnd($this->requestDate);
-            $queryCondition = "SELECT DISTINCT B.BewohnerNr,B.Name,B.Vorname, Z.Haus as haus,Z.Station as wohnbereich, CONCAT(FORMAT(B.Geburtsdatum, 'dd.MM'),'.',YEAR('".explode('.',$this->requestDate)[2]."')) as datum,  (SELECT TOP(1) id as eid FROM  [".$this->dbnameV."].dbo.KalenderKategorien WHERE Kategorie='Geburtstage der Bewohner' and (gelöschtPflege is null or gelöschtPflege = 0)) as eid
+            $queryCondition = "SELECT DISTINCT B.BewohnerNr,B.Name,B.Vorname, Z.Haus as haus,Z.Station as wohnbereich, CONCAT(FORMAT(B.Geburtsdatum, 'dd.MM'),'.',YEAR('".explode('.',$this->requestDate)[2]."')) as datum, 
+        (SELECT TOP(1) id as eid FROM  [".$this->dbnameV."].dbo.KalenderKategorien WHERE Kategorie='Geburtstage der Bewohner' and (gelöschtPflege is null or gelöschtPflege = 0)) as eid
         FROM [".$this->dbnameV."].dbo.Bewohner B JOIN [".$this->dbnameV."].dbo.Zimmer Z ON B.Zimmer=Z.ID
-        WHERE AbgangsDatum IS NULL AND (B.Geburtsdatum is not NULL AND CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)>='".$monthdates['startmonth']."' AND  CAST(CONCAT(YEAR(GETDATE()), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)<='".$monthdates['endmonth']."') ORDER BY datum ASC";  
+        WHERE AbgangsDatum IS NULL AND (B.Geburtsdatum is not NULL AND CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)>='".$monthdates['startmonth']."' AND  CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)<='".$monthdates['endmonth']."') ORDER BY datum ASC";  
         }else if($qtype=='year'){
              $yeardates=$this->getQtypeStartAndEnd($this->requestDate);
-             $queryCondition = "SELECT DISTINCT B.BewohnerNr,B.Name,B.Vorname, Z.Haus as haus,Z.Station as wohnbereich, CONCAT(FORMAT(B.Geburtsdatum, 'dd.MM'),'.',YEAR('".explode('.',$this->requestDate)[2]."')) as datum,  (SELECT TOP(1) id as eid FROM  [".$this->dbnameV."].dbo.KalenderKategorien WHERE Kategorie='Geburtstage der Bewohner' and (gelöschtPflege is null or gelöschtPflege = 0)) as eid
+             $queryCondition = "SELECT DISTINCT B.BewohnerNr,B.Name,B.Vorname, Z.Haus as haus,Z.Station as wohnbereich, CONCAT(FORMAT(B.Geburtsdatum, 'dd.MM'),'.',YEAR('".explode('.',$this->requestDate)[2]."')) as datum, 
+        (SELECT TOP(1) id as eid FROM  [".$this->dbnameV."].dbo.KalenderKategorien WHERE Kategorie='Geburtstage der Bewohner' and (gelöschtPflege is null or gelöschtPflege = 0)) as eid
         FROM [".$this->dbnameV."].dbo.Bewohner B JOIN [".$this->dbnameV."].dbo.Zimmer Z ON B.Zimmer=Z.ID
-        WHERE AbgangsDatum IS NULL AND (B.Geburtsdatum is not NULL AND CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)>='".$yeardates['startyear']."' AND  CAST(CONCAT(YEAR(GETDATE()), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)<='".$yeardates['endyear']."') ORDER BY datum ASC";  
+        WHERE AbgangsDatum IS NULL AND (B.Geburtsdatum is not NULL AND CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)>='".$yeardates['startyear']."' AND  CAST(CONCAT(YEAR('".explode('.',$this->requestDate)[2]."'), '-', FORMAT(B.Geburtsdatum, 'MM-dd')) AS DATE)<='".$yeardates['endyear']."') ORDER BY datum ASC";   
         }  
        $query =$queryCondition;
          
@@ -3528,6 +3743,7 @@ WHERE
                 }else if($row['until']==NULL AND $row['totalcount']!=NULL){
                     $festesende=';COUNT='.$row['totalcount'];
                 } 
+                
                  $rrule = new RRule\RRule("DTSTART;TZID=Europe/Berlin:".$DTStart."\nRRULE:".$row['rrulestring'].$festesende.""); 
                  $timings=$this->calculateEventTimeStAndEd($row['duration'],DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin')));
                    
@@ -3936,27 +4152,35 @@ public function getMonthDatesOnRequest(string $dateStr): array {
 
                     if($qtype=='day'){  
                        $festesende=';UNTIL='.$this->getUntilRRuleString(DateTime::createFromFormat('d.m.Y', $this->requestDate, new DateTimeZone('Europe/Berlin')), $qtype);
+                       $icende='DURATION:PT1H'. "\r\n";
                     }else if($qtype=='week'){ 
                         list($weekStart, $weekEnd) = $this->getWeekStartAndEnd($this->requestDate);
                         $festesende=';UNTIL='.$this->getUntilRRuleString(DateTime::createFromFormat('d.m.Y', $weekEnd->format('d.m.Y'), new DateTimeZone('Europe/Berlin')), 'day');
+                        $icende='DURATION:PT1H'. "\r\n";
                         }else if($qtype=='month'){
                             $ende= $this->getQtypeStartAndEnd($this->requestDate);
                             $festesende=';UNTIL='.$this->getUntilRRuleString(DateTime::createFromFormat('d.m.Y', $ende['endmonth'], new DateTimeZone('Europe/Berlin')), 'day');
+                            $icende='DURATION:PT1H'. "\r\n";
                         }else if($qtype=='year'){
                             $ende= $this->getQtypeStartAndEnd($this->requestDate);
                             $festesende=';UNTIL='.$this->getUntilRRuleString(DateTime::createFromFormat('d.m.Y', $ende['endyear'], new DateTimeZone('Europe/Berlin')), 'day');
+                            $icende='DURATION:PT1H'. "\r\n";
                         }else{
                             $festesende=';UNTIL='.$this->getUntilRRuleString(DateTime::createFromFormat('d.m.Y', $this->requestDate, new DateTimeZone('Europe/Berlin')), $qtype);
+                            $icende='DURATION:PT1H'. "\r\n";
                         } 
-
+                        
                 }else if($row['until']!=NULL AND $row['totalcount']==NULL){
                     $untdate = DateTime::createFromFormat('Y-m-d H:i:s.u', $row['until'], new DateTimeZone('Europe/Berlin'));
+                    $icende= "DTEND:" .DateTime::createFromFormat('Y-m-d H:i:s.u', $row['until'], new DateTimeZone('Europe/Berlin'))->format('Y-m-d\TH:i:s\Z'). "\r\n";
                     $festesende=';UNTIL='.$this->getUntilRRuleString($untdate, $qtype);
                 }else if($row['until']==NULL AND $row['totalcount']!=NULL){
                     $festesende=';COUNT='.$row['totalcount'];
+                    $icende='DURATION:PT1H'. "\r\n";
                 }else{
                     $festesende=';UNTIL='.$this->getUntilRRuleString(DateTime::createFromFormat('d.m.Y', $this->requestDate, new DateTimeZone('Europe/Berlin')), $qtype);
-                }  
+                    $icende='DURATION:PT1H'. "\r\n";
+                }   
                  $rrule = new RRule\RRule("DTSTART;TZID=Europe/Berlin:".$DTStart."\nRRULE:".$row['rrulestring'].$festesende.""); 
                  $timings=$this->calculateEventTimeStAndEd(50,DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin')));  
                
@@ -3965,12 +4189,33 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                         //$this->isSameDay($occurrence,$date)
                         if(($this->isSameDay($occurrence,$date))&&$this->isDateExcluded($Exceptions,$row['id'],$occurrence)==false){
                          
-                        array_push($narr,//$row['id'].' - '.$occurrence->format('D d M Y')
+                            //Create ICS
+                            $ictit="SUMMARY:".($row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag'). "\r\n";
+                                $icbet="DESCRIPTION:".trim(strlen(trim($row['betreff']))>0?$row['betreff']:'keine Angaben'). "\r\n";
+                            $ics = "BEGIN:VCALENDAR\r\n";
+                            $ics .= "VERSION:2.0\r\n";
+                            $ics .= "PRODID:-//MyApp//EN\r\n";
+                            $ics .= "CALSCALE:GREGORIAN\r\n";
+                            $ics .= "METHOD:PUBLISH\r\n";
+                            $ics .= "BEGIN:VEVENT\r\n";
+                            $ics .= "UID:" . uniqid() . "@DS-MESSENGER.com\r\n";
+                            $ics .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+                            $ics .= "DTSTART:" . DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin'))->format('Y-m-d\TH:i:s\Z') . "\r\n";
+                            $ics .=  $icende ;
+                            $ics .= $ictit;
+                            $ics .= $icbet;
+                            $ics .= "LOCATION:Online\r\n";
+                            $ics .= "RRULE:".$row['rrulestring'].$festesende."\r\n";
+                            $ics .= "END:VEVENT\r\n";
+                            $ics .= "END:VCALENDAR\r\n";
+
+                        array_push($narr, 
                         array(
                             "id"=>'RRule-'.$key.'-'.$row['id'],
                             "titel"=>$row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag',
                             "endetyp"=>(($row['until']==null&&$row['totalcount']==null)?'NODATE':($row['totalcount']!=NULL?'REPEAT':'DATE')),
                             "endetypdate"=>$row['until'],  
+                            "icstxt"=>$ics, 
                             "endetyprepeats"=>intval($row['totalcount']),
                             "repeatfrequenz"=> $row['rfrequency'],
                             "repeatmuster"=> intval($row['intervalnumber']),
@@ -3991,7 +4236,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                             ),
                             "byyeardayarray"=>$row['byyearday']!=NULL?(count(explode(',',$row['byyearday']))>0?(array_map('intval',explode(',',$row['byyearday']))):[intval($row['byyearday'])]):NULL,
                             "byweeknoarray"=>$row['byweekno']!=NULL?(count(explode(',',$row['byweekno']))>0?(array_map('intval',explode(',',$row['byweekno']))):[intval($row['byweekno'])]):NULL, 
-                            "rrstring"=>"DTSTART;TZID=Europe/Berlin:".$DTStart."\nRRULE:".$row['rrulestring'].$festesende."",
+                            "rrstring"=>"RRULE:".$row['rrulestring'].$festesende." \r\n",
                             "kategorieid"=>'serien',
                             "kategorie"=>(string)$row['kategorie']!=NULL?intval($row['kategorie']):0,
                             "katBezeichnung"=>'rrule', 
@@ -4030,13 +4275,32 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                             if(($occurrence >= $weekStart &&
                             $occurrence <= $weekEnd) &&
                             ($this->isDateExcluded($Exceptions, $row['id'], $occurrence) == false)){
-                         
+                         //Create ICS
+                         $ictit="SUMMARY:".($row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag'). "\r\n";
+                                $icbet="DESCRIPTION:".trim(strlen(trim($row['betreff']))>0?$row['betreff']:'keine Angaben'). "\r\n";
+                            $ics = "BEGIN:VCALENDAR\r\n";
+                            $ics .= "VERSION:2.0\r\n";
+                            $ics .= "PRODID:-//MyApp//EN\r\n";
+                            $ics .= "CALSCALE:GREGORIAN\r\n";
+                            $ics .= "METHOD:PUBLISH\r\n";
+                            $ics .= "BEGIN:VEVENT\r\n";
+                            $ics .= "UID:" . uniqid() . "@DS-MESSENGER.com\r\n";
+                            $ics .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+                            $ics .= "DTSTART:" . DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin'))->format('Y-m-d\TH:i:s\Z') . "\r\n";
+                            $ics .=  $icende ;
+                            $ics .= $ictit;
+                            $ics .= $icbet;
+                            $ics .= "LOCATION:Online\r\n";
+                            $ics .= "RRULE:".$row['rrulestring'].$festesende."\r\n";
+                            $ics .= "END:VEVENT\r\n";
+                            $ics .= "END:VCALENDAR\r\n";
                         array_push($narr,
                         array(
                             "id"=>'RRule-'.$key.'-'.$row['id'],
                             "titel"=>$row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag',
                             "endetyp"=>(($row['until']==null&&$row['totalcount']==null)?'NODATE':($row['totalcount']!=NULL?'REPEAT':'DATE')),
-                            "endetypdate"=>$row['until'],   
+                            "endetypdate"=>$row['until'],  
+                            "icstxt"=>$ics,  
                             "endetyprepeats"=>intval($row['totalcount']),
                             "repeatfrequenz"=> $row['rfrequency'],
                             "repeatmuster"=> intval($row['intervalnumber']),
@@ -4099,13 +4363,31 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                             if(($occurrence >= $startss &&
                             $occurrence <= $endess) &&
                             ($this->isDateExcluded($Exceptions, $row['id'], $occurrence) == false)){
-                         
+                                $ictit="SUMMARY:".($row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag'). "\r\n";
+                                $icbet="DESCRIPTION:".trim(strlen(trim($row['betreff']))>0?$row['betreff']:'keine Angaben'). "\r\n";
+                         $ics = "BEGIN:VCALENDAR\r\n";
+                            $ics .= "VERSION:2.0\r\n";
+                            $ics .= "PRODID:-//MyApp//EN\r\n";
+                            $ics .= "CALSCALE:GREGORIAN\r\n";
+                            $ics .= "METHOD:PUBLISH\r\n";
+                            $ics .= "BEGIN:VEVENT\r\n";
+                            $ics .= "UID:" . uniqid() . "@DS-MESSENGER.com\r\n";
+                            $ics .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+                            $ics .= "DTSTART:" . DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin'))->format('Y-m-d\TH:i:s\Z') . "\r\n";
+                            $ics .=  $icende ;
+                            $ics .= $ictit;
+                            $ics .= $icbet;
+                            $ics .= "LOCATION:Online\r\n";
+                            $ics .= "RRULE:".$row['rrulestring'].$festesende."\r\n";
+                            $ics .= "END:VEVENT\r\n";
+                            $ics .= "END:VCALENDAR\r\n";
                         array_push($narr,
                         array(
                             "id"=>'RRule-'.$key.'-'.$row['id'],
                             "titel"=>$row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag',
                             "endetyp"=>(($row['until']==null&&$row['totalcount']==null)?'NODATE':($row['totalcount']!=NULL?'REPEAT':'DATE')),
                             "endetypdate"=>$row['until'],   
+                            "icstxt"=>$ics,  
                             "endetyprepeats"=>intval($row['totalcount']),
                             "repeatfrequenz"=> $row['rfrequency'],
                             "repeatmuster"=> intval($row['intervalnumber']),
@@ -4168,13 +4450,31 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                             if(($occurrence >= $startss &&
                             $occurrence <= $endess) &&
                             ($this->isDateExcluded($Exceptions, $row['id'], $occurrence) == false)){
-                         
+                                $ictit="SUMMARY:".($row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag'). "\r\n";
+                                $icbet="DESCRIPTION:".trim(strlen(trim($row['betreff']))>0?$row['betreff']:'keine Angaben'). "\r\n";
+                         $ics = "BEGIN:VCALENDAR\r\n";
+                            $ics .= "VERSION:2.0\r\n";
+                            $ics .= "CALSCALE:GREGORIAN\r\n";
+                            $ics .= "METHOD:PUBLISH\r\n";
+                            $ics .= "BEGIN:VEVENT\r\n";
+                            $ics .= "BEGIN:VEVENT\r\n";
+                            $ics .= "UID:" . uniqid() . "@DS-MESSENGER.com\r\n";
+                            $ics .= "DTSTAMP:" . gmdate('Ymd\THis\Z') . "\r\n";
+                            $ics .= "DTSTART:" . DateTime::createFromFormat('Y-m-d H:i:s.u', $row['starttime'], new DateTimeZone('Europe/Berlin'))->format('Y-m-d\TH:i:s\Z') . "\r\n";
+                            $ics .=  $icende ;
+                            $ics .= $ictit;
+                            $ics .= $icbet;
+                            $ics .= "LOCATION:Online\r\n";
+                            $ics .= "RRULE:".$row['rrulestring'].$festesende."\r\n";
+                            $ics .= "END:VEVENT\r\n";
+                            $ics .= "END:VCALENDAR\r\n";
                         array_push($narr,
                         array(
                             "id"=>'RRule-'.$key.'-'.$row['id'],
                             "titel"=>$row['kname']!=NULL?(trim($row['kname'])):'Privater Eintrag',
                             "endetyp"=>(($row['until']==null&&$row['totalcount']==null)?'NODATE':($row['totalcount']!=NULL?'REPEAT':'DATE')),
                             "endetypdate"=>$row['until'],   
+                            "icstxt"=>$ics,  
                             "endetyprepeats"=>intval($row['totalcount']),
                             "repeatfrequenz"=> $row['rfrequency'],
                             "repeatmuster"=> intval($row['intervalnumber']),
@@ -4255,6 +4555,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
         $BewohnerEvalBetreuung=[];
         $BewohnerBradenskala=[];
         $BewohnerNortonskala=[];
+        $BewohnerKathetherwechsel=[];
         $BewohnerDekubitusprophylaxe=[];
         $BewohnerSicherheitskontrollen=[];
         $BewohnerEvaluierungKontraktur=[];
@@ -4281,6 +4582,9 @@ public function getMonthDatesOnRequest(string $dateStr): array {
             }
             if (trim($item['kname']) == "Tabellenwohngeld") {  
                  $BewohnerTabellenwohngeld=$this->_gettabellenwohngeld($qtype);     
+            }
+            if (trim($item['kname']) == "Katheterwechsel") {  
+                 $BewohnerKathetherwechsel=$this->_getKatheterwechsel($qtype);     
             }
             if (trim($item['kname']) == "Schwerbehindertenausweis") {  
                  $BewohnerSchwerbehindertausweis=$this->_getSchwerbehindertausweis($qtype);   
@@ -4378,8 +4682,7 @@ public function getMonthDatesOnRequest(string $dateStr): array {
             END AS katForeColor FROM [".$this->dbnameV."].dbo.Kalender K LEFT JOIN [".$this->dbnameV."].dbo.KalenderKategorien KK ON K.Kategorie=KK.ID 
             WHERE ((K.[User]='".$this->user."' OR K.[Hdz]='".$this->user."') OR (K.[User]='' AND (K.[part]='".$this->dbtype."' OR  K.[part] is null)))  AND 
             (CAST('".$this->requestDate."' AS DATE) BETWEEN CAST(K.[Beginn] AS DATE) AND CAST(K.[Ende] AS DATE))
-            ORDER BY K.Beginn ASC, K.Beginnzeit ASC"; 
-            // (FORMAT(K.[Beginn], 'dd.MM.yyyy')='".$this->requestDate."' OR (CAST(K.[Ende] AS DATE)<=CAST('".$this->requestDate."' AS DATE))) 
+            ORDER BY K.Beginn ASC, K.Beginnzeit ASC";  
         }else if($qtype=='week'){
             $weekdates=$this->getQtypeStartAndEnd($this->requestDate);
             $queryCondition="SELECT TOP(5000) K.ID AS id,COALESCE( 
@@ -4554,8 +4857,8 @@ public function getMonthDatesOnRequest(string $dateStr): array {
             foreach($result as $row){
                 $row['isAlarm']=($row['isAlarm']&&($row['isAlarm']=='TRUE'))?true:false;
                 $row['isEditable']=($row['isEditable']&&($row['isEditable']=='TRUE'))?true:false;
-                $row['isPublic']=($row['isEditable']&&($row['isEditable']=='TRUE'))?true:false;
-                $row['isprivate']=($row['isEditable']&&($row['isEditable']=='TRUE'))?true:false; 
+                $row['isPublic']=($row['isEditable']&&($row['isEditable']=='TRUE'))?true:false; 
+                $row['isprivate']=($row['isEditable']&&($row['isEditable']=='TRUE'))?true:false;
                 $row['duration']=$this->getMinutesDifference($row['realtimestart'],$row['realtimeend'])/15;
                 $row['time']=intval($row['time']);
                 $row['id']=intval($row['id']); 
@@ -4569,10 +4872,10 @@ public function getMonthDatesOnRequest(string $dateStr): array {
                  
                 array_push($narr,$row);
             }
-            $narr=array_merge($RRulesMy,$GeburtstageBewohner,$GeburtstageMitarbeiter,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung, $narr);
+            $narr=array_merge($RRulesMy,$GeburtstageBewohner,$GeburtstageMitarbeiter,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerKathetherwechsel,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung, $narr);
             return $narr;
         } else {
-            return array_merge($RRulesMy,$GeburtstageBewohner,$GeburtstageMitarbeiter,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung);
+            return array_merge($RRulesMy,$GeburtstageBewohner,$GeburtstageMitarbeiter,$BewohnerGenehmigungen,$BewohnerGEZ,$BewohnerPersAusweis,$BewohnerPflegewohngeld,$BewohnerTabellenwohngeld,$BewohnerKathetherwechsel,$BewohnerSchwerbehindertausweis,$BewohnerPflegeVisite,$BewohnerEvaluierung,$BewohnerWundauswertung,$BewohnerWundvermessung,$BewohnerEvalBetreuung,$BewohnerBradenskala,$BewohnerNortonskala, $BewohnerDekubitusprophylaxe,$BewohnerSicherheitskontrollen,$BewohnerEvaluierungKontraktur,$BewohnerErgebniserfassung);
         }
     }
     public function getAllowedKategorien(): mixed {

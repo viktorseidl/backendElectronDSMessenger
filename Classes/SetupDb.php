@@ -12,7 +12,7 @@ class SetupDb
     private $stmt;
 
 
-    public function __construct($host, $dbname, $dbnamepflege = null, $user, $password)
+    public function __construct($host, $dbname, $dbnamepflege, $user, $password)
     {
         if (!isset($host, $dbname, $user)) {
             die("Error: Missing database configuration parameters.");
@@ -20,7 +20,7 @@ class SetupDb
         $this->host = $host;
         $this->database = 'master';
         $this->databaseV = trim($dbname);
-        $this->databaseP = strlen(trim($dbnamepflege)) > 0 ? trim($dbnamepflege) : null;
+        $this->databaseP = strlen(trim($dbnamepflege)) > 0 ? trim($dbnamepflege) : "";
         $this->username = trim($user);
         $this->password = trim($password);
     }
@@ -28,7 +28,7 @@ class SetupDb
     public function checkDBCredentials(): bool|string
     {
         // Try to connect to the database
-        try {
+           try {
             // Set the DSN (Data Source Name) for SQL Server
             $dsn = "sqlsrv:Server={$this->host};Database={$this->database}";
 
@@ -40,16 +40,14 @@ class SetupDb
             $vexists = (strlen($this->databaseV) > 0) ? $this->checkIfDatabaseVPExists($this->databaseV) : false;
             $pexists = (strlen($this->databaseP) > 0) ? $this->checkIfDatabaseVPExists($this->databaseP) : false;
             //If Verwaltung Db exists, then create ConfigFile
-            if ($vexists) {
-                $res = $this->createConfigJson([
-                    "host" => $this->host,
-                    "master" => $this->database,
-                    "databaseVerwaltung" => $this->databaseV,
-                    "databasePflege" => $this->databaseP,
-                    "username" => $this->username,
-                    "password" => $this->password
-                ]);
-                return $res;
+            
+            if ($vexists) { 
+                $configResult = $this->createConfigJson();
+                if ($configResult === true) {
+                    return true;
+                } else {
+                    return 'FILE CREATION FAILED';
+                }
             } else {
                 return "NO CONNECTION";
             }
@@ -58,15 +56,18 @@ class SetupDb
         }
     }
 
-    public function createConfigJson($data): bool|string
-    {
-        $jsonData = json_encode($data, JSON_PRETTY_PRINT);
+    public function createConfigJson(): bool|string
+    {  
+        $jsonData = json_encode([
+                    "host" => $this->host,
+                    "master" => $this->database,
+                    "databaseVerwaltung" => $this->databaseV,
+                    "databasePflege" => $this->databaseP?$this->databaseP:"",
+                    "username" => $this->username,
+                    "password" => $this->password
+                ], JSON_PRETTY_PRINT);
         $filePath = __DIR__ . "/../Config/config.json";
-        if (file_put_contents($filePath, $jsonData)) {
-            return true;
-        } else {
-            return 'FILE CREATION FAILED';
-        }
+        return file_put_contents($filePath, $jsonData) !== false ? true : 'FILE CREATION FAILED';
     }
 
     public function checkIfDatabaseVPExists($name): bool
@@ -104,16 +105,15 @@ class SetupDb
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         // Create a PDO instance (this will throw an exception if the connection fails)
 
-        $tables = ['Pinnwand', 'EMail', 'EMail_Anhang'];
+        $tables = ["Pinnwand","rrevents","rrevent_exceptions","EMail", "EMail_Anhang"]; /**/ 
         $needed = [];
         $executed = [];
         foreach ($tables as $value) {
             switch ($value) {
-                case 'Pinnwand':
+                case "Pinnwand":
                     if ($this->checkIfTableExists($value) == false) {
                         array_push($needed, $value . 'Table');
-                        $sql = " 
-                                    CREATE TABLE [" . $this->databaseV . "].[dbo].[Pinnwand] (
+                        $sql = "CREATE TABLE [" . $this->databaseV . "].[dbo].[Pinnwand] (
                                     [ID] INT IDENTITY(1,1) PRIMARY KEY,
                                     [postedid] BIGINT UNIQUE NOT NULL,
                                     [anwender] VARCHAR(100) NOT NULL,
@@ -124,18 +124,69 @@ class SetupDb
                                     [geloescht] INT DEFAULT NULL,
                                     [geloeschtdatum] DATETIME DEFAULT NULL,
                                     [HexColumn] VARCHAR(15) DEFAULT '#fef08aFF' NOT NULL
-                                )";
+                                );";
                         $stm = $this->pdo->prepare($sql);
                         $result = $stm->execute();
                         $stm->closeCursor();
                         $result ? array_push($executed, $value . 'Table') : '';
                     }
                     break;
-                case 'EMail':
+                    case 'rrevents': 
                     if ($this->checkIfTableExists($value) == false) {
                         array_push($needed, $value . 'Table');
-                        $sql = " 
-                                    CREATE TABLE [" . $this->databaseV . "].[dbo].[EMail] (
+                        $sql = "CREATE TABLE [" . $this->databaseV . "].[dbo].[rrevents] (
+                            [id] INT IDENTITY(1,1) PRIMARY KEY,
+                            [anwender] VARCHAR(80) NOT NULL,    
+                            [betreff] VARCHAR(512) DEFAULT 'Terminierung' NOT NULL,         
+                            [isnote] VARCHAR(512) DEFAULT NULL,      
+                            [alertrule] DATETIME DEFAULT NULL,         
+                            [systempart] VARCHAR(10) NOT NULL, 
+                            [location] INT DEFAULT NULL,     
+                            [floor] VARCHAR(80) DEFAULT NULL,        
+                            [starttime] DATETIME NOT NULL,             
+                            [rfrequency] VARCHAR(10) NOT NULL,  
+                            [intervalnumber] INT DEFAULT 1 NOT NULL,          
+                            [byday] VARCHAR(50) DEFAULT NULL,                 
+                            [bymonthday] VARCHAR(50) DEFAULT NULL,          
+                            [bymonth] VARCHAR(50) DEFAULT NULL,             
+                            [byhour] VARCHAR(50) DEFAULT NULL,         
+                            [wkst] VARCHAR(2) DEFAULT NULL,           
+                            [byyearday] VARCHAR(100) DEFAULT NULL,    
+                            [byweekno] VARCHAR(50) DEFAULT NULL,       
+                            [totalcount] INT DEFAULT NULL,                       
+                            [until] DATETIME DEFAULT NULL,                   
+                            [changed] VARCHAR(80) DEFAULT NULL,
+                            [kategorie] INT DEFAULT 0,
+                            [hexcolor] VARCHAR(10) DEFAULT NULL,
+                            [rrulestring] VARCHAR(512) DEFAULT NULL,   
+                            [duration] INT DEFAULT NULL
+                        );";
+                        $stm = $this->pdo->prepare($sql);
+                        $result = $stm->execute();
+                        $stm->closeCursor();
+                        $result ? array_push($executed, $value . 'Table') : ''; 
+                    }
+                    break;
+                case 'rrevent_exceptions': 
+                    if ($this->checkIfTableExists($value) == false) {
+                        array_push($needed, $value . 'Table');
+                        $sql = "CREATE TABLE [" . $this->databaseV . "].[dbo].[rrevent_exceptions] (
+                            [id] INT IDENTITY(1,1) PRIMARY KEY,
+                            [rrevent_id] INT NOT NULL,
+                            [excluded_date] DATE NOT NULL  
+                            );
+                            CREATE INDEX rrevent_id
+                            ON [" . $this->databaseV . "].[dbo].[rrevent_exceptions] ([rrevent_id]);";
+                        $stm = $this->pdo->prepare($sql);
+                        $result = $stm->execute();
+                        $stm->closeCursor();
+                        $result ? array_push($executed, $value . 'Table') : ''; 
+                    }
+                    break;
+                case "EMail":
+                    if ($this->checkIfTableExists($value) == false) {
+                        array_push($needed, $value . 'Table');
+                        $sql = "CREATE TABLE [" . $this->databaseV . "].[dbo].[EMail] (
                                     [ID] INT IDENTITY(1,1) PRIMARY KEY,
                                     [Datum] DATETIME NOT NULL,
                                     [Grund_ID] INT NOT NULL,
@@ -150,7 +201,7 @@ class SetupDb
                                     [gelöschtDatum] smalldatetime DEFAULT NULL,
                                     [gelöschtUser] VARCHAR(50) DEFAULT NULL,
                                     [apptype] VARCHAR(255) DEFAULT NULL
-                                )";
+                                );";
                         $stm = $this->pdo->prepare($sql);
                         $result = $stm->execute();
                         $stm->closeCursor();
@@ -161,30 +212,30 @@ class SetupDb
                         $sql = " 
                                     ALTER TABLE [" . $this->databaseV . "].[dbo].[EMail]
                                     ADD [apptype] VARCHAR(255) DEFAULT NULL;
-                                )";
+                                );";
                         $stm = $this->pdo->prepare($sql);
                         $result = $stm->execute();
                         $stm->closeCursor();
                         $result ? array_push($executed, $value . 'Table') : '';
                     }
                     break;
-                case 'EMail_Anhang': 
-                    if ($this->checkIfTableColumnAppTypeExists($value)) {
+                case "EMail_Anhang": 
+                    if ($this->checkIfTableExists($value) == false) { 
                         array_push($needed, $value . 'Table');
-                        $sql = " 
-                            CREATE TABLE [" . $this->databaseV . "].[dbo].[EMail_Anhang] (
+                        $sql = "CREATE TABLE [" . $this->databaseV . "].[dbo].[EMail_Anhang] (
                             [ID] INT NOT NULL,
                             [Pos] INT NOT NULL,
                             [Mail] VARCHAR(MAX) NOT NULL,
                             [Name] VARCHAR(100) NOT NULL, 
-                            PRIMARY KEY ([ID], [Pos])
-                        )";
+                            CONSTRAINT pkAnhang PRIMARY KEY ([ID], [Pos])
+                        );";
                         $stm = $this->pdo->prepare($sql);
                         $result = $stm->execute();
                         $stm->closeCursor();
                         $result ? array_push($executed, $value . 'Table') : ''; 
                     }
                     break;
+                
             }
         }
         if (count($needed) == count($executed)) {
@@ -197,3 +248,4 @@ class SetupDb
 }
 
 ?>
+ 
